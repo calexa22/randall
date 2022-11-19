@@ -1,8 +1,8 @@
 package randall
 
 import (
-	"encoding/json"
 	"fmt"
+	"strconv"
 )
 
 // Encapsulates the Harvest API methods under /users
@@ -20,28 +20,24 @@ func newUserV2(domain string, hv *HeaderValues) UsersApi {
 
 // Retrieves the currently authenticated user. Returns a user object and a 200 OK response code.
 func (api *UsersApi) Me() (*JsonResponse, error) {
-	req := newRequest("GET", fmt.Sprintf("%s/me", api.baseUrl), *api.hv)
+	r := newRequest("GET", fmt.Sprintf("%s/me", api.baseUrl), *api.hv)
+	return readJsonResponse(r)
+}
 
-	resp, err := client.Do(req)
-
-	if err != nil {
-		return nil, err
+// Retrieves the currently authenticated user. Returns a user object and a 200 OK response code.
+func (api *UsersApi) Users(activeOnly bool, page int, perPage int) (*JsonResponse, error) {
+	query := map[string]string{
+		"is_active": strconv.FormatBool(activeOnly),
+		"page":      strconv.Itoa(max(page, 1)),
+		"per_page":  strconv.Itoa(min(max(page, 1), 2000)),
 	}
 
-	defer resp.Body.Close()
+	r := newRequest("GET", api.baseUrl, *api.hv, query)
+	return readJsonResponse(r)
+}
 
-	var data map[string]any
+func (api *UsersApi) User(userId int) (*JsonResponse, error) {
 
-	err = json.NewDecoder(resp.Body).Decode(&data)
-
-	if err != nil {
-		return nil, err
-	}
-
-	jsonResp := JsonResponse{
-		StatusCode: resp.StatusCode,
-		Data:       data,
-	}
-
-	return &jsonResp, nil
+	r := newRequest("GET", fmt.Sprintf("%s/users/%d", api.baseUrl, userId), *api.hv)
+	return readJsonResponse(r)
 }
