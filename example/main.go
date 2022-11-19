@@ -13,10 +13,11 @@ import (
 func main() {
 	headerValues := GetHeaderValuesFromEnv()
 
-	fmt.Printf("AccessToken: :)\n")
+	fmt.Println("AccessToken: :)")
 	fmt.Printf("AccountId: %s\n", headerValues.AccountId)
 	fmt.Printf("UserAgentApp: %s\n", headerValues.UserAgentApp)
 	fmt.Printf("UserAgentEmail: %s\n", headerValues.UserAgentEmail)
+	fmt.Println()
 
 	client := randall.New(headerValues)
 
@@ -33,7 +34,9 @@ func main() {
 	}
 
 	fmt.Println("/v2/users/me Response:")
+	fmt.Println()
 	fmt.Println("StatusCode: ", resp.StatusCode)
+	fmt.Println()
 	fmt.Println(string(bytes))
 }
 

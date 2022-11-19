@@ -16,8 +16,9 @@ type HarvestHeaders struct {
 	UserAgentEmail string
 }
 
+// The general response object for any response from the Harvest API.
 type HarvestResponse struct {
-	// The Http status code of the response from Harvest.
+	// The HTTP status code of the response from Harvest.
 	StatusCode int
 	// The JSON payload of the response from Harvest.
 	Data map[string]any
