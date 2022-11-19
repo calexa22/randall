@@ -37,14 +37,14 @@ func main() {
 	fmt.Println(string(bytes))
 }
 
-func GetHeaderValuesFromEnv() randall.HeaderValues {
+func GetHeaderValuesFromEnv() randall.HarvestHeaders {
 	err := godotenv.Load()
 
 	if err != nil {
 		log.Fatal("Unable to load .env file")
 	}
 
-	var hv randall.HeaderValues
+	var hv randall.HarvestHeaders
 
 	if token, exists := os.LookupEnv("HARVEST_ACCESS_TOKEN"); !exists || token == "" {
 		log.Fatal("Unable to retrieve HARVEST_ACCESS_TOKEN from .env file")

@@ -8,36 +8,36 @@ import (
 // Encapsulates the Harvest API methods under /users
 type UsersApi struct {
 	baseUrl string
-	hv      *HeaderValues
+	headers *HarvestHeaders
 }
 
-func newUserV2(domain string, hv *HeaderValues) UsersApi {
+func newUserV2(domain string, headers *HarvestHeaders) UsersApi {
 	return UsersApi{
 		baseUrl: fmt.Sprintf("%s/v2/users", domain),
-		hv:      hv,
+		headers: headers,
 	}
 }
 
 // Retrieves the currently authenticated user. Returns a user object and a 200 OK response code.
-func (api *UsersApi) Me() (*JsonResponse, error) {
-	r := newRequest("GET", fmt.Sprintf("%s/me", api.baseUrl), *api.hv)
-	return readJsonResponse(r)
+func (api *UsersApi) Me() (*HarvestResponse, error) {
+	r := newRequest("GET", fmt.Sprintf("%s/me", api.baseUrl), *api.headers)
+	return readResponse(r)
 }
 
 // Retrieves the currently authenticated user. Returns a user object and a 200 OK response code.
-func (api *UsersApi) Users(activeOnly bool, page int, perPage int) (*JsonResponse, error) {
+func (api *UsersApi) Users(activeOnly bool, page int, perPage int) (*HarvestResponse, error) {
 	query := map[string]string{
 		"is_active": strconv.FormatBool(activeOnly),
 		"page":      strconv.Itoa(max(page, 1)),
 		"per_page":  strconv.Itoa(min(max(page, 1), 2000)),
 	}
 
-	r := newRequest("GET", api.baseUrl, *api.hv, query)
-	return readJsonResponse(r)
+	r := newRequest("GET", api.baseUrl, *api.headers, query)
+	return readResponse(r)
 }
 
-func (api *UsersApi) User(userId int) (*JsonResponse, error) {
-
-	r := newRequest("GET", fmt.Sprintf("%s/users/%d", api.baseUrl, userId), *api.hv)
-	return readJsonResponse(r)
+// Retrieves the user with the give UserID. Returns a user object and a 200 OK response code if valid ID provided.
+func (api *UsersApi) User(userId int) (*HarvestResponse, error) {
+	r := newRequest("GET", fmt.Sprintf("%s/users/%d", api.baseUrl, userId), *api.headers)
+	return readResponse(r)
 }

@@ -10,21 +10,25 @@ const domain = "https://api.harvestapp.com"
 
 var client *http.Client
 
-// The interface used to interact with the entire Harvest API
+// The interface used to interact with the entire Harvest API.
 type Client struct {
-	HeaderValues *HeaderValues
-	Users        UsersApi
+	// A collection of values to be assigned to the request headers required by Harvest (Auth, User-Agent, Harvest-Account-ID)
+	Headers *HarvestHeaders
+	// The interface used to make calls to /users endpoints under the given Client.
+	Users UsersApi
 }
 
-func New(hv HeaderValues) *Client {
+// Initializes a new instance of Client. Requests through the Client will have the headers
+// required by the Harvest API with the passed in values
+func New(headers HarvestHeaders) *Client {
 	client = &http.Client{}
 	return &Client{
-		HeaderValues: &hv,
-		Users:        newUserV2(domain, &hv),
+		Headers: &headers,
+		Users:   newUserV2(domain, &headers),
 	}
 }
 
-func newRequest(method, url string, hv HeaderValues, queryStr ...map[string]string) *http.Request {
+func newRequest(method, url string, headers HarvestHeaders, queryStr ...map[string]string) *http.Request {
 	r, _ := http.NewRequest("GET", url, nil)
 
 	if len(queryStr) > 0 {
@@ -36,14 +40,14 @@ func newRequest(method, url string, hv HeaderValues, queryStr ...map[string]stri
 		r.URL.RawQuery = query.Encode()
 	}
 
-	r.Header.Set("User-Agent", fmt.Sprintf("%s (%s)", hv.UserAgentApp, hv.UserAgentEmail))
-	r.Header.Set("Harvest-Account-ID", hv.AccountId)
-	r.Header.Set("Authorization", fmt.Sprintf("Bearer %s", hv.AccessToken))
+	r.Header.Set("User-Agent", fmt.Sprintf("%s (%s)", headers.UserAgentApp, headers.UserAgentEmail))
+	r.Header.Set("Harvest-Account-ID", headers.AccountId)
+	r.Header.Set("Authorization", fmt.Sprintf("Bearer %s", headers.AccessToken))
 
 	return r
 }
 
-func readJsonResponse(r *http.Request) (*JsonResponse, error) {
+func readResponse(r *http.Request) (*HarvestResponse, error) {
 	resp, err := client.Do(r)
 
 	if err != nil {
@@ -60,10 +64,10 @@ func readJsonResponse(r *http.Request) (*JsonResponse, error) {
 		return nil, err
 	}
 
-	jsonResp := JsonResponse{
+	harvestResp := HarvestResponse{
 		StatusCode: resp.StatusCode,
 		Data:       data,
 	}
 
-	return &jsonResp, nil
+	return &harvestResp, nil
 }
