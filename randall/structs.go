@@ -6,3 +6,8 @@ type HeaderValues struct {
 	UserAgentApp   string
 	UserAgentEmail string
 }
+
+type JsonResponse struct {
+	StatusCode int
+	Data       map[string]any
+}

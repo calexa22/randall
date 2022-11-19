@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
@@ -12,10 +13,28 @@ import (
 func main() {
 	headerValues := GetHeaderValuesFromEnv()
 
-	fmt.Printf("AccessToken: %s\n", headerValues.AccessToken)
+	fmt.Printf("AccessToken: :)\n")
 	fmt.Printf("AccountId: %s\n", headerValues.AccountId)
 	fmt.Printf("UserAgentApp: %s\n", headerValues.UserAgentApp)
 	fmt.Printf("UserAgentEmail: %s\n", headerValues.UserAgentEmail)
+
+	client := randall.New(headerValues)
+
+	resp, err := client.Users.Me()
+
+	if err != nil {
+		log.Panic(err)
+	}
+
+	bytes, err := json.MarshalIndent(resp.Data, "", "\t")
+
+	if err != nil {
+		log.Panic(err)
+	}
+
+	fmt.Println("/v2/users/me Response:")
+	fmt.Println("StatusCode: ", resp.StatusCode)
+	fmt.Println(string(bytes))
 }
 
 func GetHeaderValuesFromEnv() randall.HeaderValues {
