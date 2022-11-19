@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	randall "github.com/calexa22/gorandall"
+	"github.com/calexa22/randall"
 	"github.com/joho/godotenv"
 )
 
