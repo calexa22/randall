@@ -1,20 +1,9 @@
 package randall
 
-// Collection of header values required to be sent on every request to Harvest.
-type HarvestHeaders struct {
-	// A Harvest account identifier, required for header Harvest-Account-ID.
-	// See https://help.getharvest.com/api-v2/introduction/overview/general/
-	AccountId string
-	// A Harvest personal access token, required for Authentication.
-	// See https://help.getharvest.com/api-v2/authentication-api/authentication/authentication/
-	AccessToken string
-	// The name of the app calling the Harvest API, required for the header User-Agent.
-	// Seehttps://help.getharvest.com/api-v2/introduction/overview/general/
-	UserAgentApp string
-	// An email associated with the app/developer calling the Harvest API, required for the header User-Agent.
-	// See https://help.getharvest.com/api-v2/introduction/overview/general/
-	UserAgentEmail string
-}
+import (
+	"encoding/json"
+	"time"
+)
 
 // The general response object for any response from the Harvest API.
 type HarvestResponse struct {
@@ -22,4 +11,40 @@ type HarvestResponse struct {
 	StatusCode int
 	// The JSON payload of the response from Harvest.
 	Data map[string]any
+}
+
+type HarvestDate time.Time
+
+func (d HarvestDate) MarshalJSON() ([]byte, error) {
+	s := time.Time(d).Format("2006-01-02")
+
+	return json.Marshal(s)
+}
+
+func (d *HarvestDate) UnmarshalJSON(b []byte) (err error) {
+	date, err := time.Parse("2006-01-02", string(b))
+	if err != nil {
+		return err
+	}
+
+	*d = HarvestDate(date.UTC())
+	return
+}
+
+type HarvestTime time.Time
+
+func (t HarvestTime) MarshalJSON() ([]byte, error) {
+	s := time.Time(t).Format("2006-01-02")
+
+	return json.Marshal(s)
+}
+
+func (t *HarvestTime) UnmarshalJSON(b []byte) (err error) {
+	date, err := time.Parse("2006-01-02", string(b))
+	if err != nil {
+		return err
+	}
+
+	*t = HarvestTime(date.UTC())
+	return
 }

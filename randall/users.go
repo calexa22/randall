@@ -5,39 +5,43 @@ import (
 	"strconv"
 )
 
+const (
+	baseUsersV2Url          = "v2/users"
+	AccessRoleMember        = "member"
+	AccessRoleManager       = "manager"
+	AccessRoleAdministrator = "administrator"
+)
+
 // Encapsulates the Harvest API methods under /users
 type UsersApi struct {
 	baseUrl string
-	headers *HarvestHeaders
+	client  *internalClient
 }
 
-func newUserV2(domain string, headers *HarvestHeaders) UsersApi {
+func newUsersV2(client *internalClient) UsersApi {
 	return UsersApi{
-		baseUrl: fmt.Sprintf("%s/v2/users", domain),
-		headers: headers,
+		baseUrl: baseUsersV2Url,
+		client:  client,
 	}
 }
 
 // Retrieves the currently authenticated user. Returns a user object and a 200 OK response code.
-func (api *UsersApi) Me() (*HarvestResponse, error) {
-	r := newRequest("GET", fmt.Sprintf("%s/me", api.baseUrl), *api.headers)
-	return readResponse(r)
+func (api UsersApi) Me() (HarvestResponse, error) {
+	return api.client.DoGet(fmt.Sprintf("%s/me", api.baseUrl))
 }
 
 // Retrieves the currently authenticated user. Returns a user object and a 200 OK response code.
-func (api *UsersApi) Users(activeOnly bool, page int, perPage int) (*HarvestResponse, error) {
+func (api UsersApi) All(activeOnly bool, page int, perPage int) (HarvestResponse, error) {
 	query := map[string]string{
 		"is_active": strconv.FormatBool(activeOnly),
 		"page":      strconv.Itoa(max(page, 1)),
 		"per_page":  strconv.Itoa(min(max(page, 1), 2000)),
 	}
 
-	r := newRequest("GET", api.baseUrl, *api.headers, query)
-	return readResponse(r)
+	return api.client.DoGet(api.baseUrl, query)
 }
 
 // Retrieves the user with the give UserID. Returns a user object and a 200 OK response code if valid ID provided.
-func (api *UsersApi) User(userId int) (*HarvestResponse, error) {
-	r := newRequest("GET", fmt.Sprintf("%s/users/%d", api.baseUrl, userId), *api.headers)
-	return readResponse(r)
+func (api UsersApi) Get(userId int) (HarvestResponse, error) {
+	return api.client.DoGet(fmt.Sprintf("%s/%d", api.baseUrl, userId))
 }
