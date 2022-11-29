@@ -2,7 +2,6 @@ package randall
 
 import (
 	"fmt"
-	"strconv"
 )
 
 const baseTasksV2Url = "v2/tasks"
@@ -13,6 +12,22 @@ type TasksApi struct {
 	client  *internalClient
 }
 
+type CreateTaskRequest struct {
+	Name              string   `json:"name"`
+	DefaultHourlyRate *float32 `json:"default_hourly_rate,omitempty"`
+	IsDefault         *bool    `json:"is_default,omitempty"`
+	IsActive          *bool    `json:"is_active,omitempty"`
+	BillableByDefault *bool    `json:"billable_by_default,omitempty"`
+}
+
+type UpdateTaskPatchRequest struct {
+	Name              string   `json:"name,omitempty"`
+	DefaultHourlyRate *float32 `json:"default_hourly_rate,omitempty"`
+	IsDefault         *bool    `json:"is_default,omitempty"`
+	IsActive          *bool    `json:"is_active,omitempty"`
+	BillableByDefault *bool    `json:"billable_by_default,omitempty"`
+}
+
 func newTasksV2(client *internalClient) TasksApi {
 	return TasksApi{
 		baseUrl: baseTasksV2Url,
@@ -21,25 +36,29 @@ func newTasksV2(client *internalClient) TasksApi {
 }
 
 // Retrieves the a list of Tasks.
-func (api *TasksApi) Tasks(isActive *bool, page, perPage *int) (HarvestResponse, error) {
-	query := make(map[string]string)
+func (api *TasksApi) GetAllTasks(params ...QueryStringProvider) (HarvestResponse, error) {
+	query, err := getUrlValues(params...)
 
-	if isActive != nil {
-		query["is_active"] = strconv.FormatBool(*isActive)
-	}
-
-	if page != nil {
-		query["page"] = strconv.Itoa(max(*page, 1))
-	}
-
-	if perPage != nil {
-		query["per_page"] = strconv.Itoa(min(max(*perPage, 1), 2000))
+	if err != nil {
+		return HarvestResponse{}, err
 	}
 
 	return api.client.DoGet(api.baseUrl, query)
 }
 
 // Retrieves a Task with the given TaskID.
-func (api *TasksApi) Task(taskId int) (HarvestResponse, error) {
+func (api *TasksApi) GetTask(taskId uint) (HarvestResponse, error) {
 	return api.client.DoGet(fmt.Sprintf("%s/%d", api.baseUrl, taskId))
+}
+
+func (api *TasksApi) CreateTask(req CreateTaskRequest) (HarvestResponse, error) {
+	return api.client.DoPost(api.baseUrl, req)
+}
+
+func (api *TasksApi) UpdateTask(taskId uint, req UpdateTaskPatchRequest) (HarvestResponse, error) {
+	return api.client.DoPatch(fmt.Sprintf("%s/%d", api.baseUrl, taskId), req)
+}
+
+func (api *TasksApi) DeleteTask(taskId uint) (HarvestResponse, error) {
+	return api.client.DoDelete(fmt.Sprintf("%s/%d", api.baseUrl, taskId))
 }

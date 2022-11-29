@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	client := randall.New(
+	client := randall.NewClient(
 		GetEnvVariable("HARVEST_ACCOUNT_ID"),
 		GetEnvVariable("HARVEST_ACCESS_TOKEN"),
 		GetEnvVariable("USER_AGENT_APP"),
@@ -65,13 +65,13 @@ func main() {
 
 	// PrintResponse(resp, "POST /v2/time_entries")
 
-	resp, err := client.TimeEntries.Delete(1941676550)
+	// resp, err := client.TimeEntries.DeleteTimeEntry(1941676550)
 
-	if err != nil {
-		log.Panic(err)
-	}
+	// if err != nil {
+	// 	log.Panic(err)
+	// }
 
-	PrintResponse(resp, "DELETE /v2/time_entries/{id}")
+	// PrintResponse(resp, "DELETE /v2/time_entries/{id}")
 }
 
 func GetEnvVariable(key string) string {
@@ -85,11 +85,7 @@ func GetEnvVariable(key string) string {
 }
 
 func PrintResponse(resp randall.HarvestResponse, endpoint string) {
-	bytes, err := json.MarshalIndent(resp.Data, "", "\t")
-
-	if err != nil {
-		log.Panic(err)
-	}
+	bytes, _ := json.MarshalIndent(resp.Data, "", "\t")
 
 	fmt.Println()
 	fmt.Printf("%s Response:\n", endpoint)
