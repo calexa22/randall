@@ -16,14 +16,16 @@ type HarvestClient struct {
 	// The interface used to make calls to /company endpoints under the given Client.
 	// The interface used to make calls to /users endpoints under the given Client.
 
-	Clients     ClientsApi
-	Company     CompanyApi
-	Contacts    ContactsApi
-	Users       UsersApi
-	Projects    ProjectsApi
-	Roles       RolesApi
-	Tasks       TasksApi
-	TimeEntries TimeEntriesApi
+	Clients           ClientsApi
+	Company           CompanyApi
+	Contacts          ContactsApi
+	ExpenseCategories ExpenseCategoriesApi
+	Expenses          ExpensesApi
+	Projects          ProjectsApi
+	Roles             RolesApi
+	Tasks             TasksApi
+	TimeEntries       TimeEntriesApi
+	Users             UsersApi
 }
 
 type internalClient struct {
@@ -51,14 +53,16 @@ func NewClient(accountId, accessToken, userAgentApp, userAgentEmail string) *Har
 	}
 
 	return &HarvestClient{
-		Clients:     newClientsV2(internal),
-		Company:     newCompanyV2(internal),
-		Contacts:    newContactsV2(internal),
-		Users:       newUsersV2(internal),
-		Projects:    newProjectsV2(internal),
-		Roles:       newRolesV2(internal),
-		Tasks:       newTasksV2(internal),
-		TimeEntries: newTimeEntriesV2(internal),
+		Clients:           newClientsV2(internal),
+		Company:           newCompanyV2(internal),
+		Contacts:          newContactsV2(internal),
+		ExpenseCategories: newExpenseCategoriesV2(internal),
+		Expenses:          newExpensesV2(internal),
+		Projects:          newProjectsV2(internal),
+		Roles:             newRolesV2(internal),
+		Tasks:             newTasksV2(internal),
+		TimeEntries:       newTimeEntriesV2(internal),
+		Users:             newUsersV2(internal),
 	}
 }
 

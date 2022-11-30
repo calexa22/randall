@@ -39,14 +39,14 @@ func (api *ClientsApi) Get(clientId uint) (HarvestResponse, error) {
 	return api.client.DoGet(fmt.Sprintf("%s/%d", api.baseUrl, clientId))
 }
 
-func (api *ClientsApi) CreateClient(req CreateClientRequest) (HarvestResponse, error) {
+func (api *ClientsApi) Create(req CreateClientRequest) (HarvestResponse, error) {
 	return api.client.DoPost(api.baseUrl, req)
 }
 
-func (api *ClientsApi) UpdateClient(clientId uint, req PatchClientRequest) (HarvestResponse, error) {
+func (api *ClientsApi) Update(clientId uint, req PatchClientRequest) (HarvestResponse, error) {
 	return api.client.DoPatch(fmt.Sprintf("%s/%d", api.baseUrl, clientId), req)
 }
 
-func (api *ClientsApi) DeleteClient(clientId uint) (HarvestResponse, error) {
+func (api *ClientsApi) Delete(clientId uint) (HarvestResponse, error) {
 	return api.client.DoDelete(fmt.Sprintf("%s/%d", api.baseUrl, clientId))
 }
