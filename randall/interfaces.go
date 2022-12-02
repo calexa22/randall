@@ -1,7 +1,10 @@
 package randall
 
-import "net/url"
+import (
+	"io"
+	"net/http"
+)
 
-type QueryStringProvider interface {
-	AddQuery(v url.Values) (url.Values, error)
+type httpRequestProvider interface {
+	NewRequest(method, url string, body io.Reader) (*http.Request, error)
 }

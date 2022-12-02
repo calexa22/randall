@@ -10,12 +10,41 @@ import (
 )
 
 func main() {
-	client := randall.NewClient(
-		GetEnvVariable("HARVEST_ACCOUNT_ID"),
-		GetEnvVariable("HARVEST_ACCESS_TOKEN"),
-		GetEnvVariable("USER_AGENT_APP"),
-		GetEnvVariable("USER_AGENT_EMAIL"),
+
+	accountId, err := GetEnvVariable("HARVEST_ACCOUNT_ID")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	token, err := GetEnvVariable("HARVEST_ACCESS_TOKEN")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	app, err := GetEnvVariable("USER_AGENT_APP")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	email, err := GetEnvVariable("USER_AGENT_EMAIL")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	randall.NewClient(
+		accountId,
+		token,
+		app,
+		email,
 	)
+
+	// client.Roles.CreateRole()
+
+	//fmt.Println(reflect.TypeOf(randall.HarvestDate{}))
 
 	// 1941661671
 
@@ -74,14 +103,14 @@ func main() {
 	// PrintResponse(resp, "DELETE /v2/time_entries/{id}")
 }
 
-func GetEnvVariable(key string) string {
+func GetEnvVariable(key string) (string, error) {
 	v, exists := os.LookupEnv(key)
 
 	if !exists || v == "" {
-		log.Fatalf("Unable to retrieve %s from .env file\n", key)
+		return "", fmt.Errorf("Unable to retrieve value for %s from .env file\n", key)
 	}
 
-	return v
+	return v, nil
 }
 
 func PrintResponse(resp randall.HarvestResponse, endpoint string) {

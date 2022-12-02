@@ -2,11 +2,10 @@ package randall
 
 import (
 	"fmt"
+	"time"
 )
 
 const (
-	baseProjectsV2Url = "v2/projects"
-
 	ProjectBilledByProject = "Project"
 	ProjectBilledByTask    = "Tasks"
 	ProjectBilledByPeople  = "People"
@@ -21,49 +20,49 @@ const (
 )
 
 type CreateProjectRequest struct {
-	ClientId                         uint         `json:"client_id"`
-	Name                             string       `json:"name"`
-	IsBillable                       bool         `json:"is_billable"`
-	BillBy                           string       `json:"bill_by"`
-	BudgetBy                         string       `json:"budget_by"`
-	Code                             *string      `json:"code,omitempty"`
-	IsActive                         *bool        `json:"is_active,omitempty"`
-	IsFixedFee                       *bool        `json:"is_fixed_fee,omitempty"`
-	HourlyRate                       *float32     `json:"hourly_rate,omitempty"`
-	Budget                           *float32     `json:"budget,omitempty"`
-	BudgetIsMonthly                  *bool        `json:"budget_is_monthly,omitempty"`
-	NotifyWhenOverBudget             *bool        `json:"notify_when_over_budget,omitempty"`
-	OverBudgetNotificationPercentage *float32     `json:"over_budget_notification_percentage,omitempty"`
-	ShowBudgetToAll                  *bool        `json:"show_budget_to_all,omitempty"`
-	CostBudget                       *float32     `json:"cost_budget,omitempty"`
-	CostBudgetIncludeExpenses        *bool        `json:"cost_budget_include_expenses,omitempty"`
-	Fee                              *float32     `json:"fee,omitempty"`
-	Notes                            *string      `json:"notes,omitempty"`
-	StartsOn                         *HarvestDate `json:"starts_on,omitempty"`
-	EndsOn                           *HarvestDate `json:"ends_on,omitempty"`
+	ClientId                         uint      `json:"client_id"`
+	Name                             string    `json:"name"`
+	IsBillable                       bool      `json:"is_billable"`
+	BillBy                           string    `json:"bill_by"`
+	BudgetBy                         string    `json:"budget_by"`
+	Code                             *string   `json:"code,omitempty"`
+	IsActive                         *bool     `json:"is_active,omitempty"`
+	IsFixedFee                       *bool     `json:"is_fixed_fee,omitempty"`
+	HourlyRate                       *float32  `json:"hourly_rate,omitempty"`
+	Budget                           *float32  `json:"budget,omitempty"`
+	BudgetIsMonthly                  *bool     `json:"budget_is_monthly,omitempty"`
+	NotifyWhenOverBudget             *bool     `json:"notify_when_over_budget,omitempty"`
+	OverBudgetNotificationPercentage *float32  `json:"over_budget_notification_percentage,omitempty"`
+	ShowBudgetToAll                  *bool     `json:"show_budget_to_all,omitempty"`
+	CostBudget                       *float32  `json:"cost_budget,omitempty"`
+	CostBudgetIncludeExpenses        *bool     `json:"cost_budget_include_expenses,omitempty"`
+	Fee                              *float32  `json:"fee,omitempty"`
+	Notes                            *string   `json:"notes,omitempty"`
+	StartsOn                         time.Time `json:"starts_on,omitempty" layout:"2006-01-02"`
+	EndsOn                           time.Time `json:"ends_on,omitempty" layout:"2006-01-02"`
 }
 
-type ProjectPatchRequest struct {
-	ClientId                         *uint        `json:"client_id,omitempty"`
-	Name                             *string      `json:"name,omitempty"`
-	IsBillable                       *bool        `json:"is_billable,omitempty"`
-	BillBy                           *string      `json:"bill_by,omitempty"`
-	BudgetBy                         *string      `json:"budget_by,omitempty"`
-	Code                             *string      `json:"code,omitempty"`
-	IsActive                         *bool        `json:"is_active,omitempty"`
-	IsFixedFee                       *bool        `json:"is_fixed_fee,omitempty"`
-	HourlyRate                       *float32     `json:"hourly_rate,omitempty"`
-	Budget                           *float32     `json:"budget,omitempty"`
-	BudgetIsMonthly                  *bool        `json:"budget_is_monthly,omitempty"`
-	NotifyWhenOverBudget             *bool        `json:"notify_when_over_budget,omitempty"`
-	OverBudgetNotificationPercentage *float32     `json:"over_budget_notification_percentage,omitempty"`
-	ShowBudgetToAll                  *bool        `json:"show_budget_to_all,omitempty"`
-	CostBudget                       *float32     `json:"cost_budget,omitempty"`
-	CostBudgetIncludeExpenses        *bool        `json:"cost_budget_include_expenses,omitempty"`
-	Fee                              *float32     `json:"fee,omitempty"`
-	Notes                            *string      `json:"notes,omitempty"`
-	StartsOn                         *HarvestDate `json:"starts_on,omitempty"`
-	EndsOn                           *HarvestDate `json:"ends_on,omitempty"`
+type UpdateProjectRequest struct {
+	ClientId                         *uint     `json:"client_id,omitempty"`
+	Name                             *string   `json:"name,omitempty"`
+	IsBillable                       *bool     `json:"is_billable,omitempty"`
+	BillBy                           *string   `json:"bill_by,omitempty"`
+	BudgetBy                         *string   `json:"budget_by,omitempty"`
+	Code                             *string   `json:"code,omitempty"`
+	IsActive                         *bool     `json:"is_active,omitempty"`
+	IsFixedFee                       *bool     `json:"is_fixed_fee,omitempty"`
+	HourlyRate                       *float32  `json:"hourly_rate,omitempty"`
+	Budget                           *float32  `json:"budget,omitempty"`
+	BudgetIsMonthly                  *bool     `json:"budget_is_monthly,omitempty"`
+	NotifyWhenOverBudget             *bool     `json:"notify_when_over_budget,omitempty"`
+	OverBudgetNotificationPercentage *float32  `json:"over_budget_notification_percentage,omitempty"`
+	ShowBudgetToAll                  *bool     `json:"show_budget_to_all,omitempty"`
+	CostBudget                       *float32  `json:"cost_budget,omitempty"`
+	CostBudgetIncludeExpenses        *bool     `json:"cost_budget_include_expenses,omitempty"`
+	Fee                              *float32  `json:"fee,omitempty"`
+	Notes                            *string   `json:"notes,omitempty"`
+	StartsOn                         time.Time `json:"starts_on,omitempty" layout:"2006-01-02"`
+	EndsOn                           time.Time `json:"ends_on,omitempty" layout:"2006-01-02"`
 }
 
 type CreateUserAssignmentRequest struct {
@@ -107,14 +106,19 @@ type ProjectsApi struct {
 
 func newProjectsV2(client *internalClient) ProjectsApi {
 	return ProjectsApi{
-		baseUrl: baseProjectsV2Url,
+		baseUrl: "v2/projects",
 		client:  client,
 	}
 }
 
 // Retrieves the a list of Projects.
-func (api ProjectsApi) GetAll(params HarvestCollectionParams) (HarvestResponse, error) {
-	return api.client.DoGetV2(api.baseUrl, params)
+func (api ProjectsApi) GetAll(params ...HarvestCollectionParams) (HarvestResponse, error) {
+	var param *HarvestCollectionParams
+
+	if len(params) > 0 {
+		param = &params[0]
+	}
+	return api.client.DoGet(api.baseUrl, param)
 }
 
 // Retrieves a Project with the given ProjectID.
@@ -126,7 +130,7 @@ func (api ProjectsApi) Create(req CreateProjectRequest) (HarvestResponse, error)
 	return api.client.DoPost(api.baseUrl, req)
 }
 
-func (api ProjectsApi) Update(projectId uint, req ProjectPatchRequest) (HarvestResponse, error) {
+func (api ProjectsApi) Update(projectId uint, req UpdateProjectRequest) (HarvestResponse, error) {
 	return api.client.DoPatch(fmt.Sprintf("%s/%d", api.baseUrl, projectId), req)
 }
 
@@ -134,12 +138,22 @@ func (api ProjectsApi) Delete(projectId uint) (HarvestResponse, error) {
 	return api.client.DoDelete(fmt.Sprintf("%s/%d", api.baseUrl, projectId))
 }
 
-func (api ProjectsApi) GetAllUserAssigments(params HarvestCollectionParams) (HarvestResponse, error) {
-	return api.client.DoGetV2("v2/user_assignments", params)
+func (api ProjectsApi) GetAllUserAssigments(params ...HarvestCollectionParams) (HarvestResponse, error) {
+	var param *HarvestCollectionParams
+
+	if len(params) > 0 {
+		param = &params[0]
+	}
+	return api.client.DoGet("v2/user_assignments", param)
 }
 
-func (api ProjectsApi) GetAllUserAssigmentsForProject(projectId uint, params HarvestCollectionParams) (HarvestResponse, error) {
-	return api.client.DoGetV2(fmt.Sprintf("%s/%d/user_assignments", api.baseUrl, projectId), params)
+func (api ProjectsApi) GetAllUserAssigmentsForProject(projectId uint, params ...HarvestCollectionParams) (HarvestResponse, error) {
+	var param *HarvestCollectionParams
+
+	if len(params) > 0 {
+		param = &params[0]
+	}
+	return api.client.DoGet(fmt.Sprintf("%s/%d/user_assignments", api.baseUrl, projectId), param)
 }
 
 func (api ProjectsApi) GetUserAssigment(projectId, userAssignmentId uint) (HarvestResponse, error) {
@@ -158,12 +172,22 @@ func (api ProjectsApi) DeleteUserAssignment(projectId, userAssignmentId uint) (H
 	return api.client.DoDelete(fmt.Sprintf("%s/%d/user_assignments/%d", api.baseUrl, projectId, userAssignmentId))
 }
 
-func (api ProjectsApi) GetAllTaskAssigments(params HarvestCollectionParams) (HarvestResponse, error) {
-	return api.client.DoGetV2("v2/task_assignments", params)
+func (api ProjectsApi) GetAllTaskAssigments(params ...HarvestCollectionParams) (HarvestResponse, error) {
+	var param *HarvestCollectionParams
+
+	if len(params) > 0 {
+		param = &params[0]
+	}
+	return api.client.DoGet("v2/task_assignments", param)
 }
 
-func (api ProjectsApi) GetAllTaskAssigmentsForProject(projectId uint, params HarvestCollectionParams) (HarvestResponse, error) {
-	return api.client.DoGetV2(fmt.Sprintf("%s/%d/task_assignments", api.baseUrl, projectId), params)
+func (api ProjectsApi) GetAllTaskAssigmentsForProject(projectId uint, params ...HarvestCollectionParams) (HarvestResponse, error) {
+	var param *HarvestCollectionParams
+
+	if len(params) > 0 {
+		param = &params[0]
+	}
+	return api.client.DoGet(fmt.Sprintf("%s/%d/task_assignments", api.baseUrl, projectId), param)
 }
 
 func (api ProjectsApi) GetTaskAssigment(projectId, taskAssignmentId uint) (HarvestResponse, error) {

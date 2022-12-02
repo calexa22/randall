@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"net/url"
 
 	"github.com/google/go-querystring/query"
 	"github.com/shopspring/decimal"
@@ -16,16 +15,16 @@ type HarvestClient struct {
 	// The interface used to make calls to /company endpoints under the given Client.
 	// The interface used to make calls to /users endpoints under the given Client.
 
-	Clients           ClientsApi
-	Company           CompanyApi
-	Contacts          ContactsApi
-	ExpenseCategories ExpenseCategoriesApi
-	Expenses          ExpensesApi
-	Projects          ProjectsApi
-	Roles             RolesApi
-	Tasks             TasksApi
-	TimeEntries       TimeEntriesApi
-	Users             UsersApi
+	Clients     ClientsApi
+	Company     CompanyApi
+	Contacts    ContactsApi
+	Estimates   EstimatesApi
+	Expenses    ExpensesApi
+	Projects    ProjectsApi
+	Roles       RolesApi
+	Tasks       TasksApi
+	TimeEntries TimeEntriesApi
+	Users       UsersApi
 }
 
 type internalClient struct {
@@ -53,47 +52,37 @@ func NewClient(accountId, accessToken, userAgentApp, userAgentEmail string) *Har
 	}
 
 	return &HarvestClient{
-		Clients:           newClientsV2(internal),
-		Company:           newCompanyV2(internal),
-		Contacts:          newContactsV2(internal),
-		ExpenseCategories: newExpenseCategoriesV2(internal),
-		Expenses:          newExpensesV2(internal),
-		Projects:          newProjectsV2(internal),
-		Roles:             newRolesV2(internal),
-		Tasks:             newTasksV2(internal),
-		TimeEntries:       newTimeEntriesV2(internal),
-		Users:             newUsersV2(internal),
+		Clients:     newClientsV2(internal),
+		Company:     newCompanyV2(internal),
+		Contacts:    newContactsV2(internal),
+		Estimates:   newEstimatesV2(internal),
+		Expenses:    newExpensesV2(internal),
+		Projects:    newProjectsV2(internal),
+		Roles:       newRolesV2(internal),
+		Tasks:       newTasksV2(internal),
+		TimeEntries: newTimeEntriesV2(internal),
+		Users:       newUsersV2(internal),
 	}
 }
 
-func (client *internalClient) DoGet(url string, query ...url.Values) (HarvestResponse, error) {
-	r, _ := http.NewRequest("GET", fmt.Sprintf("%s/%s", client.baseUrl, url), nil)
-
-	if len(query) > 0 && query[0] != nil {
-		r.URL.RawQuery = query[0].Encode()
-	}
-
-	client.SetHeaders(r, false)
-
-	return client.readResponse(r)
-}
-
-func (client *internalClient) DoGetV2(url string, params HarvestCollectionParams) (HarvestResponse, error) {
+func (client *internalClient) DoGet(url string, params ...interface{}) (HarvestResponse, error) {
 	r, err := http.NewRequest("GET", fmt.Sprintf("%s/%s", client.baseUrl, url), nil)
 
 	if err != nil {
 		return HarvestResponse{}, nil
 	}
 
-	values, err := query.Values(params)
+	if len(params) > 0 {
+		values, err := query.Values(params[0])
 
-	if err != nil {
-		return HarvestResponse{}, nil
+		if err != nil {
+			return HarvestResponse{}, nil
+		}
+
+		r.URL.RawQuery = values.Encode()
 	}
 
-	r.URL.RawQuery = values.Encode()
-
-	client.SetHeaders(r, false)
+	client.setHeaders(r, false)
 
 	return client.readResponse(r)
 }
@@ -111,7 +100,7 @@ func (client *internalClient) DoPost(url string, body ...interface{}) (HarvestRe
 		return HarvestResponse{}, err
 	}
 
-	client.SetHeaders(r, true)
+	client.setHeaders(r, true)
 
 	return client.readResponse(r)
 }
@@ -129,7 +118,7 @@ func (client *internalClient) DoPatch(url string, body ...interface{}) (HarvestR
 		return HarvestResponse{}, err
 	}
 
-	client.SetHeaders(r, false)
+	client.setHeaders(r, false)
 
 	return client.readResponse(r)
 }
@@ -141,7 +130,7 @@ func (client *internalClient) DoDelete(url string) (HarvestResponse, error) {
 		return HarvestResponse{}, err
 	}
 
-	client.SetHeaders(r, false)
+	client.setHeaders(r, false)
 
 	return client.readResponse(r)
 }
@@ -155,7 +144,7 @@ func (client *internalClient) SetQuery(r *http.Request, queryStr map[string]stri
 	r.URL.RawQuery = query.Encode()
 }
 
-func (client *internalClient) SetHeaders(r *http.Request, includeContentType bool) {
+func (client *internalClient) setHeaders(r *http.Request, includeContentType bool) {
 	r.Header.Set("User-Agent", fmt.Sprintf("%s (%s)", client.userAgentApp, client.userAgentEmail))
 	r.Header.Set("Harvest-Account-ID", client.accountId)
 	r.Header.Set("Authorization", fmt.Sprintf("Bearer %s", client.accessToken))
@@ -168,7 +157,7 @@ func (client *internalClient) SetHeaders(r *http.Request, includeContentType boo
 func (client *internalClient) getBody(body []interface{}) (*bytes.Buffer, error) {
 	var b *bytes.Buffer
 
-	if len(body) > 1 && body[0] != nil {
+	if len(body) > 0 && body[0] != nil {
 		buff, err := json.Marshal(body[0])
 
 		if err != nil {

@@ -8,7 +8,7 @@ import (
 	"github.com/google/go-querystring/query"
 )
 
-const baseTimeEntriesV2Url = "v2/time_entries"
+const _baseTimeEntriesV2Url = "v2/time_entries"
 
 // Encapsulates the Harvest API methods under /time_entries
 type TimeEntriesApi struct {
@@ -46,34 +46,34 @@ func (p GetTimeEntriesParams) AddQuery(v url.Values) (url.Values, error) {
 }
 
 type CreateTimeEntryViaDurationRequest struct {
-	UserId      uint               `json:"user_id,omitempty"`
 	ProjectId   uint               `json:"project_id"`
 	TaskId      uint               `json:"task_id"`
-	SpentDate   HarvestDate        `json:"spent_date"`
-	Hours       float32            `json:"hours,omitempty"`
-	Notes       string             `json:"notes,omitempty"`
+	SpentDate   time.Time          `json:"spent_date" layout:"2006-01-02"`
+	UserId      *uint              `json:"user_id,omitempty"`
+	Hours       *float32           `json:"hours,omitempty"`
+	Notes       *string            `json:"notes,omitempty"`
 	ExternalRef *ExternalReference `json:"external_reference,omitempty"`
 }
 
 type CreateTimeEntryViaStartEndRequest struct {
-	UserId      uint               `json:"user_id,omitempty"`
 	ProjectId   uint               `json:"project_id"`
 	TaskId      uint               `json:"task_id"`
-	SpentDate   HarvestDate        `json:"spent_date"`
-	StartedTime string             `json:"started_time,omitempty"`
-	EndTime     string             `json:"end_time,omitempty"`
-	Notes       string             `json:"notes,omitempty"`
+	SpentDate   time.Time          `json:"spent_date" layout:"2006-01-02"`
+	UserId      *uint              `json:"user_id,omitempty"`
+	StartedTime *string            `json:"started_time,omitempty"`
+	EndTime     *string            `json:"end_time,omitempty"`
+	Notes       *string            `json:"notes,omitempty"`
 	ExternalRef *ExternalReference `json:"external_reference,omitempty"`
 }
 
-type TimeEntryPatchRequest struct {
-	ProjectId   uint               `json:"project_id,omitempty"`
-	TaskId      uint               `json:"task_id,omitempty"`
-	SpentDate   *HarvestDate       `json:"spent_date,omitempty"`
-	StartedTime string             `json:"started_time,omitempty"`
-	EndTime     string             `json:"end_time,omitempty"`
-	Hours       float32            `json:"hours,omitempty"`
-	Notes       string             `json:"notes,omitempty"`
+type UpdateTimeEntryRequest struct {
+	ProjectId   *uint              `json:"project_id,omitempty"`
+	TaskId      *uint              `json:"task_id,omitempty"`
+	SpentDate   time.Time          `json:"spent_date,omitempty" layout:"2006-01-02"`
+	StartedTime *string            `json:"started_time,omitempty"`
+	EndTime     *string            `json:"end_time,omitempty"`
+	Hours       *float32           `json:"hours,omitempty"`
+	Notes       *string            `json:"notes,omitempty"`
 	ExternalRef *ExternalReference `json:"external_reference,omitempty"`
 }
 
@@ -86,21 +86,20 @@ type ExternalReference struct {
 
 func newTimeEntriesV2(client *internalClient) TimeEntriesApi {
 	return TimeEntriesApi{
-		baseUrl: baseTimeEntriesV2Url,
+		baseUrl: "v2/time_entries",
 		client:  client,
 	}
 }
 
 // Retrieves the time entries accessible to th currently authenticated user.
 // Returns a company object and a 200 OK response code.
-func (api TimeEntriesApi) GetAll(params ...QueryStringProvider) (HarvestResponse, error) {
-	query, err := getUrlValues(params...)
+func (api TimeEntriesApi) GetAll(params ...GetTimeEntriesParams) (HarvestResponse, error) {
+	var param *GetTimeEntriesParams
 
-	if err != nil {
-		return HarvestResponse{}, err
+	if len(params) > 0 {
+		param = &params[0]
 	}
-
-	return api.client.DoGet(api.baseUrl, query)
+	return api.client.DoGet(api.baseUrl, param)
 }
 
 func (api TimeEntriesApi) GetTimeEntry(timeEntryId uint) (HarvestResponse, error) {
@@ -115,7 +114,7 @@ func (api TimeEntriesApi) CreateViaStartEnd(req CreateTimeEntryViaStartEndReques
 	return api.client.DoPost(api.baseUrl, req)
 }
 
-func (api TimeEntriesApi) UpdateTimeEntry(timeEntryId uint, req TimeEntryPatchRequest) (HarvestResponse, error) {
+func (api TimeEntriesApi) UpdateTimeEntry(timeEntryId uint, req UpdateTimeEntryRequest) (HarvestResponse, error) {
 	return api.client.DoPatch(fmt.Sprintf("%s/%d", api.baseUrl, timeEntryId), req)
 }
 
