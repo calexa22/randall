@@ -1,7 +1,5 @@
 package randall
 
-const _baseCompanyV2Url = "v2/company"
-
 // Encapsulates the Harvest API methods under /company
 type CompanyApi struct {
 	baseUrl string
@@ -15,7 +13,7 @@ type UpdateCompanyRequest struct {
 
 func newCompanyV2(client *internalClient) CompanyApi {
 	return CompanyApi{
-		baseUrl: _baseCompanyV2Url,
+		baseUrl: "v2/company",
 		client:  client,
 	}
 }

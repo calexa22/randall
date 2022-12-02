@@ -2,8 +2,6 @@ package randall
 
 import "fmt"
 
-const _baseClientsV2Url = "v2/clients"
-
 // Encapsulates the Harvest API methods under /company
 type ClientsApi struct {
 	baseUrl string
@@ -26,7 +24,7 @@ type PatchClientRequest struct {
 
 func newClientsV2(client *internalClient) ClientsApi {
 	return ClientsApi{
-		baseUrl: _baseClientsV2Url,
+		baseUrl: "v2/clients",
 		client:  client,
 	}
 }
