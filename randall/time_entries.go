@@ -8,8 +8,6 @@ import (
 	"github.com/google/go-querystring/query"
 )
 
-const _baseTimeEntriesV2Url = "v2/time_entries"
-
 // Encapsulates the Harvest API methods under /time_entries
 type TimeEntriesApi struct {
 	baseUrl string
