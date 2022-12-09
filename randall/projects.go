@@ -113,12 +113,7 @@ func newProjectsV2(client *internalClient) ProjectsApi {
 
 // Retrieves the a list of Projects.
 func (api ProjectsApi) GetAll(params ...HarvestCollectionParams) (HarvestResponse, error) {
-	var param *HarvestCollectionParams
-
-	if len(params) > 0 {
-		param = &params[0]
-	}
-	return api.client.DoGet(api.baseUrl, param)
+	return api.client.DoGet(api.baseUrl, getOptionalCollectionParams(params))
 }
 
 // Retrieves a Project with the given ProjectID.
@@ -139,21 +134,11 @@ func (api ProjectsApi) Delete(projectId uint) (HarvestResponse, error) {
 }
 
 func (api ProjectsApi) GetAllUserAssigments(params ...HarvestCollectionParams) (HarvestResponse, error) {
-	var param *HarvestCollectionParams
-
-	if len(params) > 0 {
-		param = &params[0]
-	}
-	return api.client.DoGet("v2/user_assignments", param)
+	return api.client.DoGet("v2/user_assignments", getOptionalCollectionParams(params))
 }
 
 func (api ProjectsApi) GetAllUserAssigmentsForProject(projectId uint, params ...HarvestCollectionParams) (HarvestResponse, error) {
-	var param *HarvestCollectionParams
-
-	if len(params) > 0 {
-		param = &params[0]
-	}
-	return api.client.DoGet(fmt.Sprintf("%s/%d/user_assignments", api.baseUrl, projectId), param)
+	return api.client.DoGet(fmt.Sprintf("%s/%d/user_assignments", api.baseUrl, projectId), getOptionalCollectionParams(params))
 }
 
 func (api ProjectsApi) GetUserAssigment(projectId, userAssignmentId uint) (HarvestResponse, error) {
@@ -173,21 +158,11 @@ func (api ProjectsApi) DeleteUserAssignment(projectId, userAssignmentId uint) (H
 }
 
 func (api ProjectsApi) GetAllTaskAssigments(params ...HarvestCollectionParams) (HarvestResponse, error) {
-	var param *HarvestCollectionParams
-
-	if len(params) > 0 {
-		param = &params[0]
-	}
-	return api.client.DoGet("v2/task_assignments", param)
+	return api.client.DoGet("v2/task_assignments", getOptionalCollectionParams(params))
 }
 
 func (api ProjectsApi) GetAllTaskAssigmentsForProject(projectId uint, params ...HarvestCollectionParams) (HarvestResponse, error) {
-	var param *HarvestCollectionParams
-
-	if len(params) > 0 {
-		param = &params[0]
-	}
-	return api.client.DoGet(fmt.Sprintf("%s/%d/task_assignments", api.baseUrl, projectId), param)
+	return api.client.DoGet(fmt.Sprintf("%s/%d/task_assignments", api.baseUrl, projectId), getOptionalCollectionParams(params))
 }
 
 func (api ProjectsApi) GetTaskAssigment(projectId, taskAssignmentId uint) (HarvestResponse, error) {

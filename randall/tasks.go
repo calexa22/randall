@@ -35,12 +35,7 @@ func newTasksV2(client *internalClient) TasksApi {
 
 // Retrieves the a list of Tasks.
 func (api TasksApi) GetAllTasks(params ...HarvestCollectionParams) (HarvestResponse, error) {
-	var param *HarvestCollectionParams
-
-	if len(params) > 0 {
-		param = &params[0]
-	}
-	return api.client.DoGet(api.baseUrl, param)
+	return api.client.DoGet(api.baseUrl, getOptionalCollectionParams(params))
 }
 
 // Retrieves a Task with the given TaskID.

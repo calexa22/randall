@@ -30,12 +30,7 @@ func newClientsV2(client *internalClient) ClientsApi {
 }
 
 func (api ClientsApi) GetAll(params ...HarvestCollectionParams) (HarvestResponse, error) {
-	var param *HarvestCollectionParams
-
-	if len(params) > 0 {
-		param = &params[0]
-	}
-	return api.client.DoGet(api.baseUrl, param)
+	return api.client.DoGet(api.baseUrl, getOptionalCollectionParams(params))
 }
 
 func (api ClientsApi) Get(clientId uint) (HarvestResponse, error) {

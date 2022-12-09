@@ -61,33 +61,11 @@ type UpdateEstimateLineItemRequest struct {
 }
 
 type CreateEstimateMessageRequest struct {
-	Recipients  []EstimateMessageRecipient `json:"recipients"`
-	Subject     *string                    `json:"subject,omitempty"`
-	Body        *string                    `json:"body,omitempty"`
-	SendMeACopy *bool                      `json:"send_me_a_copy,omitempty"`
-	EventType   *string                    `json:"event_type,omitempty"`
-}
-
-type EstimateMessageRecipient struct {
-	Email string  `json:"email"`
-	Name  *string `json:"name,omitempty"`
-}
-
-type EstimateMessageEventType uint
-
-const (
-	Send EstimateMessageEventType = iota
-	Accept
-	Decline
-	Reopen
-)
-
-type updateEventTypeRequest struct {
-	EventType string `json:"event_type"`
-}
-
-type upsertEstimateItemCategory struct {
-	Name string `json:"name"`
+	Recipients  []MessageRecipient `json:"recipients"`
+	Subject     *string            `json:"subject,omitempty"`
+	Body        *string            `json:"body,omitempty"`
+	SendMeACopy *bool              `json:"send_me_a_copy,omitempty"`
+	EventType   *string            `json:"event_type,omitempty"`
 }
 
 func newEstimatesV2(client *internalClient) EstimatesApi {
@@ -99,11 +77,7 @@ func newEstimatesV2(client *internalClient) EstimatesApi {
 }
 
 func (api EstimatesApi) GetAll(params ...HarvestCollectionParams) (HarvestResponse, error) {
-	var param *HarvestCollectionParams
-	if len(params) > 0 {
-		param = &params[0]
-	}
-	return api.client.DoGet(api.estimatesBaseUrl, param)
+	return api.client.DoGet(api.estimatesBaseUrl, getOptionalCollectionParams(params))
 }
 
 func (api EstimatesApi) Get(estimateId uint) (HarvestResponse, error) {
@@ -123,52 +97,49 @@ func (api EstimatesApi) Delete(estimateId uint) (HarvestResponse, error) {
 }
 
 func (api EstimatesApi) GetAllEstimateMessages(estimateId uint, params ...HarvestCollectionParams) (HarvestResponse, error) {
-	var param *HarvestCollectionParams
-
-	if len(params) > 0 {
-		param = &params[0]
-	}
-	return api.client.DoGet(fmt.Sprintf("%s/%d/messages", api.estimatesBaseUrl, estimateId), param)
+	return api.client.DoGet(
+		fmt.Sprintf("%s/%d/messages", api.estimatesBaseUrl, estimateId),
+		getOptionalCollectionParams(params),
+	)
 }
 
 func (api EstimatesApi) CreateEstimateMessage(estimateId uint, req CreateEstimateMessageRequest) (HarvestResponse, error) {
 	return api.client.DoPost(fmt.Sprintf("%s/%d/messages", api.estimatesBaseUrl, estimateId), req)
 }
 
-func (api EstimatesApi) DeleteEstimateMessage(estimateId uint) (HarvestResponse, error) {
-	return api.client.DoDelete(fmt.Sprintf("%s/%d/messages", api.estimatesBaseUrl, estimateId))
-}
-
 func (api EstimatesApi) MarkDraftEstimateSent(estimateId uint) (HarvestResponse, error) {
 	return api.client.DoPost(
 		fmt.Sprintf("%s/%d/messages", api.estimatesBaseUrl, estimateId),
-		getUpdateEventTypeRequest(Send))
+		getUpdateEventTypeRequest("send"))
 }
 
 func (api EstimatesApi) MarkEstimateAccepted(estimateId uint) (HarvestResponse, error) {
 	return api.client.DoPost(
 		fmt.Sprintf("%s/%d/messages", api.estimatesBaseUrl, estimateId),
-		getUpdateEventTypeRequest(Accept))
+		getUpdateEventTypeRequest("accept"),
+	)
 }
 
 func (api EstimatesApi) MarkEstimateDeclined(estimateId uint) (HarvestResponse, error) {
 	return api.client.DoPost(
 		fmt.Sprintf("%s/%d/messages", api.estimatesBaseUrl, estimateId),
-		getUpdateEventTypeRequest(Decline))
+		getUpdateEventTypeRequest("decline"),
+	)
 }
 
 func (api EstimatesApi) ReopenClosedEstimate(estimateId uint) (HarvestResponse, error) {
 	return api.client.DoPost(
 		fmt.Sprintf("%s/%d/messages", api.estimatesBaseUrl, estimateId),
-		getUpdateEventTypeRequest(Reopen))
+		getUpdateEventTypeRequest("re-open"),
+	)
+}
+
+func (api EstimatesApi) DeleteEstimateMessage(estimateId uint) (HarvestResponse, error) {
+	return api.client.DoDelete(fmt.Sprintf("%s/%d/messages", api.estimatesBaseUrl, estimateId))
 }
 
 func (api EstimatesApi) GetAllEstimateItemCategories(params ...HarvestCollectionParams) (HarvestResponse, error) {
-	var param *HarvestCollectionParams
-	if len(params) > 0 {
-		param = &params[0]
-	}
-	return api.client.DoGet(api.estimateItemCategoriesBaseUrl, param)
+	return api.client.DoGet(api.estimateItemCategoriesBaseUrl, getOptionalCollectionParams(params))
 }
 
 func (api EstimatesApi) GetEstimateItemCategory(estimateItemCategoryId uint) (HarvestResponse, error) {
@@ -176,39 +147,18 @@ func (api EstimatesApi) GetEstimateItemCategory(estimateItemCategoryId uint) (Ha
 }
 
 func (api EstimatesApi) CreateEstimateItemCategory(categoryName string) (HarvestResponse, error) {
-	return api.client.DoPost(api.estimateItemCategoriesBaseUrl, upsertEstimateItemCategory{
+	return api.client.DoPost(api.estimateItemCategoriesBaseUrl, upsertItemCategoryRequest{
 		Name: categoryName,
 	})
 }
 
 func (api EstimatesApi) UpdateEstimateItemCategory(estimateCategoryItemId uint, categoryName string) (HarvestResponse, error) {
 	return api.client.DoPatch(fmt.Sprintf("%s/%d", api.estimateItemCategoriesBaseUrl, estimateCategoryItemId),
-		upsertEstimateItemCategory{
+		upsertItemCategoryRequest{
 			Name: categoryName,
 		})
 }
 
 func (api EstimatesApi) DeleteEstimateItemCategory(estimateCategoryItemId uint) (HarvestResponse, error) {
 	return api.client.DoDelete(fmt.Sprintf("%s/%d", api.estimateItemCategoriesBaseUrl, estimateCategoryItemId))
-}
-
-func (e EstimateMessageEventType) toString() string {
-	switch e {
-	case Send:
-		return "send"
-	case Accept:
-		return "accept"
-	case Decline:
-		return "decline"
-	case Reopen:
-		return "re-open"
-	default:
-		return ""
-	}
-}
-
-func getUpdateEventTypeRequest(e EstimateMessageEventType) updateEventTypeRequest {
-	return updateEventTypeRequest{
-		EventType: e.toString(),
-	}
 }

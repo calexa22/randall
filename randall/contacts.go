@@ -38,12 +38,7 @@ func newContactsV2(client *internalClient) ContactsApi {
 }
 
 func (api ContactsApi) GetAll(params ...HarvestCollectionParams) (HarvestResponse, error) {
-	var param *HarvestCollectionParams
-
-	if len(params) > 0 {
-		param = &params[0]
-	}
-	return api.client.DoGet(api.baseUrl, param)
+	return api.client.DoGet(api.baseUrl, getOptionalCollectionParams(params))
 }
 
 func (api ContactsApi) Get(contactId uint) (HarvestResponse, error) {

@@ -7,7 +7,6 @@ import (
 	"net/http"
 
 	"github.com/google/go-querystring/query"
-	"github.com/shopspring/decimal"
 )
 
 // The interface used to interact with the entire Harvest API.
@@ -20,6 +19,7 @@ type HarvestClient struct {
 	Contacts    ContactsApi
 	Estimates   EstimatesApi
 	Expenses    ExpensesApi
+	Invoices    InvoicesApi
 	Projects    ProjectsApi
 	Roles       RolesApi
 	Tasks       TasksApi
@@ -39,9 +39,6 @@ type internalClient struct {
 // Initializes a new instance of Client. Requests through the Client will have the headers
 // required by the Harvest API with the passed in values
 func NewClient(accountId, accessToken, userAgentApp, userAgentEmail string) *HarvestClient {
-	// todo
-	decimal.MarshalJSONWithoutQuotes = true
-
 	internal := &internalClient{
 		httpClient:     &http.Client{},
 		baseUrl:        "https://api.harvestapp.com",
@@ -57,6 +54,7 @@ func NewClient(accountId, accessToken, userAgentApp, userAgentEmail string) *Har
 		Contacts:    newContactsV2(internal),
 		Estimates:   newEstimatesV2(internal),
 		Expenses:    newExpensesV2(internal),
+		Invoices:    newInvoicesV2(internal),
 		Projects:    newProjectsV2(internal),
 		Roles:       newRolesV2(internal),
 		Tasks:       newTasksV2(internal),

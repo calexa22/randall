@@ -59,12 +59,7 @@ func newExpensesV2(client *internalClient) ExpensesApi {
 }
 
 func (api ExpensesApi) GetAll(params ...HarvestCollectionParams) (HarvestResponse, error) {
-	var param *HarvestCollectionParams
-
-	if len(params) > 0 {
-		param = &params[0]
-	}
-	return api.client.DoGet(api.expensesBaseUrl, param)
+	return api.client.DoGet(api.expensesBaseUrl, getOptionalCollectionParams(params))
 }
 
 func (api ExpensesApi) Get(expenseId uint) (HarvestResponse, error) {
@@ -84,12 +79,7 @@ func (api ExpensesApi) Delete(expenseId uint) (HarvestResponse, error) {
 }
 
 func (api ExpensesApi) GetAllExpenseCategories(params ...HarvestCollectionParams) (HarvestResponse, error) {
-	var param *HarvestCollectionParams
-
-	if len(params) > 0 {
-		param = &params[0]
-	}
-	return api.client.DoGet(api.expenseCategoriesBaseUrl, param)
+	return api.client.DoGet(api.expenseCategoriesBaseUrl, getOptionalCollectionParams(params))
 }
 
 func (api ExpensesApi) GetExpenseCategory(expenseCategoryId uint) (HarvestResponse, error) {

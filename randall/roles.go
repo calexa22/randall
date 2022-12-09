@@ -33,12 +33,7 @@ func newRolesV2(client *internalClient) RolesApi {
 
 // Retrieves a list of all Roles, with an optional query string.
 func (api RolesApi) GetAllRoles(params ...HarvestCollectionParams) (HarvestResponse, error) {
-	var param *HarvestCollectionParams
-
-	if len(params) > 0 {
-		param = &params[0]
-	}
-	return api.client.DoGet(api.baseUrl, param)
+	return api.client.DoGet(api.baseUrl, getOptionalCollectionParams(params))
 }
 
 // Retrieves a Role with the given RoleID.
