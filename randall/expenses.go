@@ -1,7 +1,11 @@
 package randall
 
 import (
+	"errors"
 	"fmt"
+	"os"
+	"path/filepath"
+	"strconv"
 	"time"
 )
 
@@ -21,19 +25,19 @@ type CreateExpenseRequest struct {
 	TotalCost         *float32  `json:"total_cost,omitempty"`
 	Notes             *string   `json:"notes,omitempty"`
 	Billable          *bool     `json:"billable,omitempty"`
-	Receipt           *string   `json:"receipt,omitempty" layout:"2006-01-02"` // TODO add support for attachment
+	Receipt           *string   `json:"receipt,omitempty" layout:"2006-01-02"`
 }
 
 type UpdateExpenseRequest struct {
-	ProjectId         *uint     `json:"project_id,omitempty"`
-	ExpenseCategoryId *uint     `json:"expense_category_id,omitempty"`
-	SpentDate         time.Time `json:"spent_date,omitempty" layout:"2006-01-02"`
-	Units             *uint     `json:"units,omitempty"`
-	TotalCost         *float32  `json:"total_cost,omitempty"`
-	Notes             *string   `json:"notes,omitempty"`
-	Billable          *bool     `json:"billable,omitempty"`
-	Receipt           *string   `json:"receipt,omitempty"` // TODO add support for attachment
-	DeleteReceipt     *bool     `json:"delete_receipt,omitempty"`
+	ProjectId         *uint      `json:"project_id,omitempty"`
+	ExpenseCategoryId *uint      `json:"expense_category_id,omitempty"`
+	SpentDate         *time.Time `json:"spent_date,omitempty" layout:"2006-01-02"`
+	Units             *uint      `json:"units,omitempty"`
+	TotalCost         *float32   `json:"total_cost,omitempty"`
+	Notes             *string    `json:"notes,omitempty"`
+	Billable          *bool      `json:"billable,omitempty"`
+	Receipt           *string    `json:"receipt,omitempty"`
+	DeleteReceipt     *bool      `json:"delete_receipt,omitempty"`
 }
 
 type CreateExpenseCategoryRequest struct {
@@ -67,10 +71,25 @@ func (api ExpensesApi) Get(expenseId uint) (HarvestResponse, error) {
 }
 
 func (api ExpensesApi) Create(req CreateExpenseRequest) (HarvestResponse, error) {
+	if req.Receipt != nil {
+		multipart, err := req.multipartData()
+		if err != nil {
+			return HarvestResponse{}, err
+		}
+		return api.client.DoPostMultipart(api.expensesBaseUrl, multipart)
+	}
+
 	return api.client.DoPost(api.expensesBaseUrl, req)
 }
 
 func (api ExpensesApi) Update(expenseId uint, req UpdateExpenseRequest) (HarvestResponse, error) {
+	if req.Receipt != nil {
+		multipart, err := req.multipartData()
+		if err != nil {
+			return HarvestResponse{}, err
+		}
+		return api.client.DoPostMultipart(api.expensesBaseUrl, multipart)
+	}
 	return api.client.DoPatch(fmt.Sprintf("%s/%d", api.expensesBaseUrl, expenseId), req)
 }
 
@@ -96,4 +115,119 @@ func (api ExpensesApi) UpdateExpenseCategory(expenseCategoryId uint, req UpdateE
 
 func (api ExpensesApi) DeleteExpenseCategory(expenseCategoryId uint) (HarvestResponse, error) {
 	return api.client.DoDelete(fmt.Sprintf("%s/%d", api.expenseCategoriesBaseUrl, expenseCategoryId))
+}
+
+func (r CreateExpenseRequest) multipartData() (multipartData, error) {
+	data := make(map[string]string, 8)
+
+	data["project_id"] = strconv.FormatUint(uint64(r.ProjectId), 10)
+	data["expense_category_id"] = strconv.FormatUint(uint64(r.ExpenseCategoryId), 10)
+	data["spent_date"] = time.Time(r.SpentDate).Format("2006-01-02")
+
+	if r.UserId != nil {
+		data["user_id"] = strconv.FormatUint(uint64(*r.UserId), 10)
+	}
+
+	if r.Units != nil {
+		data["units"] = strconv.FormatUint(uint64(*r.Units), 10)
+	}
+
+	if r.TotalCost != nil {
+		// TODO find the proper way to serialize decimals for multipart requests
+		// might look into decimal pkg
+		//data["total_cost"] = strconv.FormatFloat(uint64(*r.Units), 10)
+	}
+
+	if r.Notes != nil {
+		data["notes"] = *r.Notes
+	}
+
+	if r.Billable != nil {
+		data["billable"] = strconv.FormatBool(*r.Billable)
+	}
+
+	files := make(map[string]string, 1)
+	if r.Receipt != nil {
+		if err := isValidReceipt(*r.Receipt); err != nil {
+			return multipartData{}, err
+		}
+
+		files["receipt"] = *r.Receipt
+	}
+
+	return multipartData{
+		data:  data,
+		files: files,
+	}, nil
+}
+
+func (r UpdateExpenseRequest) multipartData() (multipartData, error) {
+	data := make(map[string]string, 8)
+
+	if r.ProjectId != nil {
+		data["project_id"] = strconv.FormatUint(uint64(*r.ProjectId), 10)
+	}
+
+	if r.ExpenseCategoryId != nil {
+		data["expense_category_id"] = strconv.FormatUint(uint64(*r.ExpenseCategoryId), 10)
+	}
+
+	if r.SpentDate != nil {
+		data["spent_date"] = time.Time(*r.SpentDate).Format("2006-01-02")
+	}
+
+	if r.Units != nil {
+		data["units"] = strconv.FormatUint(uint64(*r.Units), 10)
+	}
+
+	if r.TotalCost != nil {
+		// TODO find the proper way to serialize decimals for multipart requests
+		// might look into decimal pkg
+		//data["total_cost"] = strconv.FormatFloat(uint64(*r.Units), 10)
+	}
+
+	if r.Notes != nil {
+		data["notes"] = *r.Notes
+	}
+
+	if r.Billable != nil {
+		data["billable"] = strconv.FormatBool(*r.Billable)
+	}
+
+	files := make(map[string]string, 1)
+	if r.Receipt != nil {
+		if err := isValidReceipt(*r.Receipt); err != nil {
+			return multipartData{}, err
+		}
+
+		files["receipt"] = *r.Receipt
+	}
+
+	return multipartData{
+		data:  data,
+		files: files,
+	}, nil
+}
+
+func isValidReceipt(receiptPath string) error {
+	if _, err := os.Stat(receiptPath); errors.Is(err, os.ErrNotExist) {
+		return fmt.Errorf("unable to find file at specified location %s", receiptPath)
+	}
+
+	validExts := []string{"pdf", "png", "jpg", "gif"}
+	ext := filepath.Ext(receiptPath)
+	isValidExt := false
+
+	for _, validExt := range validExts {
+		if ext == validExt {
+			isValidExt = true
+			break
+		}
+	}
+
+	if !isValidExt {
+		return fmt.Errorf("%s: invalid file type, valid files types are %+v", receiptPath, validExts)
+	}
+
+	return nil
 }

@@ -4,16 +4,17 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
+	"mime/multipart"
 	"net/http"
+	"os"
+	"path/filepath"
 
 	"github.com/google/go-querystring/query"
 )
 
 // The interface used to interact with the entire Harvest API.
 type HarvestClient struct {
-	// The interface used to make calls to /company endpoints under the given Client.
-	// The interface used to make calls to /users endpoints under the given Client.
-
 	Clients     ClientsApi
 	Company     CompanyApi
 	Contacts    ContactsApi
@@ -34,6 +35,11 @@ type internalClient struct {
 	accessToken    string
 	userAgentApp   string
 	userAgentEmail string
+}
+
+type multipartData struct {
+	data  map[string]string
+	files map[string]string
 }
 
 // Initializes a new instance of Client. Requests through the Client will have the headers
@@ -80,13 +86,13 @@ func (client *internalClient) DoGet(url string, params ...interface{}) (HarvestR
 		r.URL.RawQuery = values.Encode()
 	}
 
-	client.setHeaders(r, false)
+	client.setHeaders(r)
 
 	return client.readResponse(r)
 }
 
 func (client *internalClient) DoPost(url string, body ...interface{}) (HarvestResponse, error) {
-	b, err := client.getBody(body)
+	b, err := client.getJsonBody(body)
 
 	if err != nil {
 		return HarvestResponse{}, err
@@ -98,13 +104,31 @@ func (client *internalClient) DoPost(url string, body ...interface{}) (HarvestRe
 		return HarvestResponse{}, err
 	}
 
-	client.setHeaders(r, true)
+	client.setHeaders(r, "application/json")
+
+	return client.readResponse(r)
+}
+
+func (client *internalClient) DoPostMultipart(url string, formData multipartData) (HarvestResponse, error) {
+	ct, b, err := client.getMultipartBody(formData)
+
+	if err != nil {
+		return HarvestResponse{}, err
+	}
+
+	r, err := http.NewRequest("POST", fmt.Sprintf("%s/%s", client.baseUrl, url), b)
+
+	if err != nil {
+		return HarvestResponse{}, err
+	}
+
+	client.setHeaders(r, ct)
 
 	return client.readResponse(r)
 }
 
 func (client *internalClient) DoPatch(url string, body ...interface{}) (HarvestResponse, error) {
-	b, err := client.getBody(body)
+	b, err := client.getJsonBody(body)
 
 	if err != nil {
 		return HarvestResponse{}, err
@@ -116,7 +140,7 @@ func (client *internalClient) DoPatch(url string, body ...interface{}) (HarvestR
 		return HarvestResponse{}, err
 	}
 
-	client.setHeaders(r, false)
+	client.setHeaders(r, "application/json")
 
 	return client.readResponse(r)
 }
@@ -128,7 +152,7 @@ func (client *internalClient) DoDelete(url string) (HarvestResponse, error) {
 		return HarvestResponse{}, err
 	}
 
-	client.setHeaders(r, false)
+	client.setHeaders(r)
 
 	return client.readResponse(r)
 }
@@ -142,17 +166,17 @@ func (client *internalClient) SetQuery(r *http.Request, queryStr map[string]stri
 	r.URL.RawQuery = query.Encode()
 }
 
-func (client *internalClient) setHeaders(r *http.Request, includeContentType bool) {
+func (client *internalClient) setHeaders(r *http.Request, contentType ...string) {
 	r.Header.Set("User-Agent", fmt.Sprintf("%s (%s)", client.userAgentApp, client.userAgentEmail))
 	r.Header.Set("Harvest-Account-ID", client.accountId)
 	r.Header.Set("Authorization", fmt.Sprintf("Bearer %s", client.accessToken))
 
-	if includeContentType {
-		r.Header.Set("Content-Type", "application/json")
+	if len(contentType) > 0 && len(contentType[0]) > 0 {
+		r.Header.Set("Content-Type", contentType[0])
 	}
 }
 
-func (client *internalClient) getBody(body []interface{}) (*bytes.Buffer, error) {
+func (client *internalClient) getJsonBody(body []interface{}) (*bytes.Buffer, error) {
 	var b *bytes.Buffer
 
 	if len(body) > 0 && body[0] != nil {
@@ -166,6 +190,47 @@ func (client *internalClient) getBody(body []interface{}) (*bytes.Buffer, error)
 	}
 
 	return b, nil
+}
+
+func (client *internalClient) getMultipartBody(formData multipartData) (string, io.Reader, error) {
+	buf := &bytes.Buffer{}
+	bw := multipart.NewWriter(buf)
+
+	for field, value := range formData.data {
+		pw, err := bw.CreateFormField(field)
+
+		if err != nil {
+			return "", nil, err
+		}
+
+		_, err = pw.Write([]byte(value))
+
+		if err != nil {
+			return "", nil, err
+		}
+	}
+
+	for field, path := range formData.files {
+		f, err := os.Open(path)
+		if err != nil {
+			return "", nil, err
+		}
+		defer f.Close()
+
+		_, filename := filepath.Split(path)
+		fw, err := bw.CreateFormFile(field, filename)
+		if err != nil {
+			return "", nil, err
+		}
+
+		_, err = io.Copy(fw, f)
+		if err != nil {
+			return "", nil, err
+		}
+	}
+
+	bw.Close()
+	return bw.FormDataContentType(), buf, nil
 }
 
 func (client *internalClient) readResponse(req *http.Request) (HarvestResponse, error) {
