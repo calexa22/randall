@@ -69,7 +69,7 @@ func NewClient(accountId, accessToken, userAgentApp, userAgentEmail string) *Har
 	}
 }
 
-func (client *internalClient) DoGet(url string, params ...interface{}) (HarvestResponse, error) {
+func (client *internalClient) doGet(url string, params ...interface{}) (HarvestResponse, error) {
 	r, err := http.NewRequest("GET", fmt.Sprintf("%s/%s", client.baseUrl, url), nil)
 
 	if err != nil {
@@ -91,7 +91,7 @@ func (client *internalClient) DoGet(url string, params ...interface{}) (HarvestR
 	return client.readResponse(r)
 }
 
-func (client *internalClient) DoPost(url string, body ...interface{}) (HarvestResponse, error) {
+func (client *internalClient) doPost(url string, body ...interface{}) (HarvestResponse, error) {
 	b, err := client.getJsonBody(body)
 
 	if err != nil {
@@ -109,7 +109,7 @@ func (client *internalClient) DoPost(url string, body ...interface{}) (HarvestRe
 	return client.readResponse(r)
 }
 
-func (client *internalClient) DoPostMultipart(url string, formData multipartData) (HarvestResponse, error) {
+func (client *internalClient) doPostMultipart(url string, formData multipartData) (HarvestResponse, error) {
 	ct, b, err := client.getMultipartBody(formData)
 
 	if err != nil {
@@ -127,7 +127,7 @@ func (client *internalClient) DoPostMultipart(url string, formData multipartData
 	return client.readResponse(r)
 }
 
-func (client *internalClient) DoPatch(url string, body ...interface{}) (HarvestResponse, error) {
+func (client *internalClient) doPatch(url string, body ...interface{}) (HarvestResponse, error) {
 	b, err := client.getJsonBody(body)
 
 	if err != nil {
@@ -145,7 +145,7 @@ func (client *internalClient) DoPatch(url string, body ...interface{}) (HarvestR
 	return client.readResponse(r)
 }
 
-func (client *internalClient) DoDelete(url string) (HarvestResponse, error) {
+func (client *internalClient) doDelete(url string) (HarvestResponse, error) {
 	r, err := http.NewRequest("DELETE", fmt.Sprintf("%s/%s", client.baseUrl, url), nil)
 
 	if err != nil {
@@ -155,15 +155,6 @@ func (client *internalClient) DoDelete(url string) (HarvestResponse, error) {
 	client.setHeaders(r)
 
 	return client.readResponse(r)
-}
-
-func (client *internalClient) SetQuery(r *http.Request, queryStr map[string]string) {
-	query := r.URL.Query()
-	for key, value := range queryStr {
-		query.Set(key, value)
-	}
-
-	r.URL.RawQuery = query.Encode()
 }
 
 func (client *internalClient) setHeaders(r *http.Request, contentType ...string) {

@@ -153,102 +153,102 @@ func newInvoicesV2(client *internalClient) InvoicesApi {
 }
 
 func (api InvoicesApi) GetAll(params ...HarvestCollectionParams) (HarvestResponse, error) {
-	return api.client.DoGet(api.baseUrl, getOptionalCollectionParams(params))
+	return api.client.doGet(api.baseUrl, getOptionalCollectionParams(params))
 }
 
 func (api InvoicesApi) Get(invoiceId uint) (HarvestResponse, error) {
-	return api.client.DoGet(fmt.Sprintf("%s/%d", api.baseUrl, invoiceId))
+	return api.client.doGet(fmt.Sprintf("%s/%d", api.baseUrl, invoiceId))
 }
 
 func (api InvoicesApi) CreateFreeForm(req CreateFreeFormInvoiceRequest) (HarvestResponse, error) {
-	return api.client.DoPost(api.baseUrl, req)
+	return api.client.doPost(api.baseUrl, req)
 }
 
 func (api InvoicesApi) CreateFromTrackedTimeAndExpenses(req CreateInvoiceFromTrackedTimeAndExpenseRequest) (HarvestResponse, error) {
-	return api.client.DoPost(api.baseUrl, req)
+	return api.client.doPost(api.baseUrl, req)
 }
 
 func (api InvoicesApi) Update(invoiceId uint, req UpdateInvoiceRequest) (HarvestResponse, error) {
-	return api.client.DoPatch(fmt.Sprintf("%s/%d", api.baseUrl, invoiceId), req)
+	return api.client.doPatch(fmt.Sprintf("%s/%d", api.baseUrl, invoiceId), req)
 }
 
 func (api InvoicesApi) Delete(invoiceId uint) (HarvestResponse, error) {
-	return api.client.DoDelete(fmt.Sprintf("%s/%d", api.baseUrl, invoiceId))
+	return api.client.doDelete(fmt.Sprintf("%s/%d", api.baseUrl, invoiceId))
 }
 
 func (api InvoicesApi) GetAllInvoiceItemCategories(params ...HarvestCollectionParams) (HarvestResponse, error) {
-	return api.client.DoGet(api.itemCategoriesBaseUrl, getOptionalCollectionParams(params))
+	return api.client.doGet(api.itemCategoriesBaseUrl, getOptionalCollectionParams(params))
 }
 
 func (api InvoicesApi) GetInvoiceItemCategory(invoiceItemCategoryItemId uint) (HarvestResponse, error) {
-	return api.client.DoGet(fmt.Sprintf("%s/%d", api.itemCategoriesBaseUrl, invoiceItemCategoryItemId))
+	return api.client.doGet(fmt.Sprintf("%s/%d", api.itemCategoriesBaseUrl, invoiceItemCategoryItemId))
 }
 
 func (api InvoicesApi) CreateInvoiceItemCategory(categoryName string) (HarvestResponse, error) {
-	return api.client.DoPost(api.itemCategoriesBaseUrl, upsertItemCategoryRequest{
+	return api.client.doPost(api.itemCategoriesBaseUrl, upsertItemCategoryRequest{
 		Name: categoryName,
 	})
 }
 
 func (api InvoicesApi) UpdateInvoiceItemCategory(invoiceItemCategoryItemId uint, categoryName string) (HarvestResponse, error) {
-	return api.client.DoPatch(fmt.Sprintf("%s/%d", api.itemCategoriesBaseUrl, invoiceItemCategoryItemId),
+	return api.client.doPatch(fmt.Sprintf("%s/%d", api.itemCategoriesBaseUrl, invoiceItemCategoryItemId),
 		upsertItemCategoryRequest{
 			Name: categoryName,
 		})
 }
 
 func (api EstimatesApi) DeleteInvoiceItemCategory(estimateCategoryItemId uint) (HarvestResponse, error) {
-	return api.client.DoDelete(fmt.Sprintf("%s/%d", api.estimateItemCategoriesBaseUrl, estimateCategoryItemId))
+	return api.client.doDelete(fmt.Sprintf("%s/%d", api.estimateItemCategoriesBaseUrl, estimateCategoryItemId))
 }
 
 func (api InvoicesApi) GetAllInvoiceMessages(invoiceId uint, params ...HarvestCollectionParams) (HarvestResponse, error) {
-	return api.client.DoGet(fmt.Sprintf("%s/%d/messages", api.baseUrl, invoiceId), getOptionalCollectionParams(params))
+	return api.client.doGet(fmt.Sprintf("%s/%d/messages", api.baseUrl, invoiceId), getOptionalCollectionParams(params))
 }
 
 func (api InvoicesApi) GetInvoiceMessageandBody(invoiceId uint) (HarvestResponse, error) {
-	return api.client.DoGet(fmt.Sprintf("%s/%d/messages/new", api.baseUrl, invoiceId))
+	return api.client.doGet(fmt.Sprintf("%s/%d/messages/new", api.baseUrl, invoiceId))
 }
 
 func (api InvoicesApi) CreateInvoiceMessage(invoiceId uint, req CreateInvoiceMessageRequest) (HarvestResponse, error) {
-	return api.client.DoPost(fmt.Sprintf("%s/%d/messages", api.baseUrl, invoiceId), req)
+	return api.client.doPost(fmt.Sprintf("%s/%d/messages", api.baseUrl, invoiceId), req)
 }
 
 func (api InvoicesApi) MarkDraftEstimateSent(invoiceId uint) (HarvestResponse, error) {
-	return api.client.DoPost(
+	return api.client.doPost(
 		fmt.Sprintf("%s/%d/messages", api.baseUrl, invoiceId),
 		getUpdateEventTypeRequest("send"))
 }
 
 func (api InvoicesApi) MarkOpenInvoiceClosed(invoiceId uint) (HarvestResponse, error) {
-	return api.client.DoPost(
+	return api.client.doPost(
 		fmt.Sprintf("%s/%d/messages", api.client.baseUrl, invoiceId),
 		getUpdateEventTypeRequest("close"))
 }
 
 func (api InvoicesApi) ReopenCloseInvoice(invoiceId uint) (HarvestResponse, error) {
-	return api.client.DoPost(
+	return api.client.doPost(
 		fmt.Sprintf("%s/%d/messages", api.baseUrl, invoiceId),
 		getUpdateEventTypeRequest("re-open"))
 }
 
 func (api InvoicesApi) MarkOpenInvoiceDraft(invoiceId uint) (HarvestResponse, error) {
-	return api.client.DoPost(
+	return api.client.doPost(
 		fmt.Sprintf("%s/%d/messages", api.baseUrl, invoiceId),
 		getUpdateEventTypeRequest("draft"))
 }
 
 func (api InvoicesApi) DeleteInvoiceMessage(invoiceId, invoiceMessageId uint) (HarvestResponse, error) {
-	return api.client.DoDelete(fmt.Sprintf("%s/%d/messages/%d", api.baseUrl, invoiceId, invoiceMessageId))
+	return api.client.doDelete(fmt.Sprintf("%s/%d/messages/%d", api.baseUrl, invoiceId, invoiceMessageId))
 }
 
 func (api InvoicesApi) GetAllInvoicePayments(invoiceId uint, params ...HarvestCollectionParams) (HarvestResponse, error) {
-	return api.client.DoGet(fmt.Sprintf("%s/%d/payments", api.baseUrl, invoiceId), getOptionalCollectionParams(params))
+	return api.client.doGet(fmt.Sprintf("%s/%d/payments", api.baseUrl, invoiceId), getOptionalCollectionParams(params))
 }
 
 func (api InvoicesApi) CreateInvoicePayment(invoiceId uint, req CreateInvoicePaymentRequest) (HarvestResponse, error) {
-	return api.client.DoPost(fmt.Sprintf("%s/%d/payments", api.baseUrl, invoiceId), req)
+	return api.client.doPost(fmt.Sprintf("%s/%d/payments", api.baseUrl, invoiceId), req)
 }
 
 func (api InvoicesApi) DeleteInvoicePayment(invoiceId, paymentId uint) (HarvestResponse, error) {
-	return api.client.DoDelete(fmt.Sprintf("%s/%d/payments/%d", api.baseUrl, invoiceId, paymentId))
+	return api.client.doDelete(fmt.Sprintf("%s/%d/payments/%d", api.baseUrl, invoiceId, paymentId))
 }

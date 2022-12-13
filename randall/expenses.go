@@ -63,11 +63,11 @@ func newExpensesV2(client *internalClient) ExpensesApi {
 }
 
 func (api ExpensesApi) GetAll(params ...HarvestCollectionParams) (HarvestResponse, error) {
-	return api.client.DoGet(api.expensesBaseUrl, getOptionalCollectionParams(params))
+	return api.client.doGet(api.expensesBaseUrl, getOptionalCollectionParams(params))
 }
 
 func (api ExpensesApi) Get(expenseId uint) (HarvestResponse, error) {
-	return api.client.DoGet(fmt.Sprintf("%s/%d", api.expensesBaseUrl, expenseId))
+	return api.client.doGet(fmt.Sprintf("%s/%d", api.expensesBaseUrl, expenseId))
 }
 
 func (api ExpensesApi) Create(req CreateExpenseRequest) (HarvestResponse, error) {
@@ -76,10 +76,10 @@ func (api ExpensesApi) Create(req CreateExpenseRequest) (HarvestResponse, error)
 		if err != nil {
 			return HarvestResponse{}, err
 		}
-		return api.client.DoPostMultipart(api.expensesBaseUrl, multipart)
+		return api.client.doPostMultipart(api.expensesBaseUrl, multipart)
 	}
 
-	return api.client.DoPost(api.expensesBaseUrl, req)
+	return api.client.doPost(api.expensesBaseUrl, req)
 }
 
 func (api ExpensesApi) Update(expenseId uint, req UpdateExpenseRequest) (HarvestResponse, error) {
@@ -88,33 +88,33 @@ func (api ExpensesApi) Update(expenseId uint, req UpdateExpenseRequest) (Harvest
 		if err != nil {
 			return HarvestResponse{}, err
 		}
-		return api.client.DoPostMultipart(api.expensesBaseUrl, multipart)
+		return api.client.doPostMultipart(api.expensesBaseUrl, multipart)
 	}
-	return api.client.DoPatch(fmt.Sprintf("%s/%d", api.expensesBaseUrl, expenseId), req)
+	return api.client.doPatch(fmt.Sprintf("%s/%d", api.expensesBaseUrl, expenseId), req)
 }
 
 func (api ExpensesApi) Delete(expenseId uint) (HarvestResponse, error) {
-	return api.client.DoDelete(fmt.Sprintf("%s/%d", api.expensesBaseUrl, expenseId))
+	return api.client.doDelete(fmt.Sprintf("%s/%d", api.expensesBaseUrl, expenseId))
 }
 
 func (api ExpensesApi) GetAllExpenseCategories(params ...HarvestCollectionParams) (HarvestResponse, error) {
-	return api.client.DoGet(api.expenseCategoriesBaseUrl, getOptionalCollectionParams(params))
+	return api.client.doGet(api.expenseCategoriesBaseUrl, getOptionalCollectionParams(params))
 }
 
 func (api ExpensesApi) GetExpenseCategory(expenseCategoryId uint) (HarvestResponse, error) {
-	return api.client.DoGet(fmt.Sprintf("%s/%d", api.expenseCategoriesBaseUrl, expenseCategoryId))
+	return api.client.doGet(fmt.Sprintf("%s/%d", api.expenseCategoriesBaseUrl, expenseCategoryId))
 }
 
 func (api ExpensesApi) CreateExpenseCategory(req CreateExpenseRequest) (HarvestResponse, error) {
-	return api.client.DoPost(api.expenseCategoriesBaseUrl, req)
+	return api.client.doPost(api.expenseCategoriesBaseUrl, req)
 }
 
 func (api ExpensesApi) UpdateExpenseCategory(expenseCategoryId uint, req UpdateExpenseRequest) (HarvestResponse, error) {
-	return api.client.DoPatch(fmt.Sprintf("%s/%d", api.expenseCategoriesBaseUrl, expenseCategoryId), req)
+	return api.client.doPatch(fmt.Sprintf("%s/%d", api.expenseCategoriesBaseUrl, expenseCategoryId), req)
 }
 
 func (api ExpensesApi) DeleteExpenseCategory(expenseCategoryId uint) (HarvestResponse, error) {
-	return api.client.DoDelete(fmt.Sprintf("%s/%d", api.expenseCategoriesBaseUrl, expenseCategoryId))
+	return api.client.doDelete(fmt.Sprintf("%s/%d", api.expenseCategoriesBaseUrl, expenseCategoryId))
 }
 
 func (r CreateExpenseRequest) multipartData() (multipartData, error) {

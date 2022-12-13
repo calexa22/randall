@@ -70,90 +70,90 @@ func newUsersV2(client *internalClient) UsersApi {
 
 // Retrieves the currently authenticated user. Returns a user object and a 200 OK response code.
 func (api UsersApi) MyUser() (HarvestResponse, error) {
-	return api.client.DoGet(fmt.Sprintf("%s/me", api.baseUrl))
+	return api.client.doGet(fmt.Sprintf("%s/me", api.baseUrl))
 }
 
 // Retrieves the currently authenticated user. Returns a user object and a 200 OK response code.
 func (api UsersApi) AllUsers(params ...HarvestCollectionParams) (HarvestResponse, error) {
-	return api.client.DoGet(api.baseUrl, getOptionalCollectionParams(params))
+	return api.client.doGet(api.baseUrl, getOptionalCollectionParams(params))
 }
 
 // Retrieves the user with the give UserID. Returns a user object and a 200 OK response code if valid ID provided.
 func (api UsersApi) GetUser(userId uint) (HarvestResponse, error) {
-	return api.client.DoGet(fmt.Sprintf("%s/%d", api.baseUrl, userId))
+	return api.client.doGet(fmt.Sprintf("%s/%d", api.baseUrl, userId))
 }
 
 func (api UsersApi) CreateUser(req CreateUserRequest) (HarvestResponse, error) {
-	return api.client.DoPost(api.baseUrl, req)
+	return api.client.doPost(api.baseUrl, req)
 }
 
 func (api UsersApi) UpdateUser(userId uint, req UpdateUserRequest) (HarvestResponse, error) {
-	return api.client.DoPatch(fmt.Sprintf("%s/%d", api.baseUrl, userId), req)
+	return api.client.doPatch(fmt.Sprintf("%s/%d", api.baseUrl, userId), req)
 }
 
 func (api UsersApi) ArchiveUser(userId uint) (HarvestResponse, error) {
 	isActive := false
-	return api.client.DoPatch(fmt.Sprintf("%s/%d", api.baseUrl, userId), UpdateUserRequest{
+	return api.client.doPatch(fmt.Sprintf("%s/%d", api.baseUrl, userId), UpdateUserRequest{
 		IsActive: &isActive,
 	})
 }
 
 func (api UsersApi) DeleteUser(userId uint) (HarvestResponse, error) {
-	return api.client.DoDelete(fmt.Sprintf("%s/%d", api.baseUrl, userId))
+	return api.client.doDelete(fmt.Sprintf("%s/%d", api.baseUrl, userId))
 }
 
 func (api UsersApi) UnarchiveUser(userId uint) (HarvestResponse, error) {
-	return api.client.DoPatch(fmt.Sprintf("%s/%d", api.baseUrl, userId), UpdateUserRequest{
+	return api.client.doPatch(fmt.Sprintf("%s/%d", api.baseUrl, userId), UpdateUserRequest{
 		IsActive: OptionalBool(true),
 	})
 }
 
 func (api UsersApi) GetAssignedTeammates(userId uint) (HarvestResponse, error) {
-	return api.client.DoGet(fmt.Sprintf("%s/%d/teammates", api.baseUrl, userId))
+	return api.client.doGet(fmt.Sprintf("%s/%d/teammates", api.baseUrl, userId))
 }
 
 func (api UsersApi) UpdateAssignedTeammates(userId uint, teammateIds UpdateAssignedTeammatesRequest) (HarvestResponse, error) {
-	return api.client.DoPatch(fmt.Sprintf("%s/%d/teammates", api.baseUrl, userId), teammateIds)
+	return api.client.doPatch(fmt.Sprintf("%s/%d/teammates", api.baseUrl, userId), teammateIds)
 }
 
 func (api UsersApi) GetBillableRates(userId uint, params ...HarvestCollectionParams) (HarvestResponse, error) {
-	return api.client.DoGet(
+	return api.client.doGet(
 		fmt.Sprintf("%s/%d/billable_rates", api.baseUrl, userId),
 		getOptionalCollectionParams(params))
 }
 
 func (api UsersApi) GetBillableRate(userId, billableRateId uint) (HarvestResponse, error) {
-	return api.client.DoGet(fmt.Sprintf("%s/%d/billable_rates/%d", api.baseUrl, userId, billableRateId))
+	return api.client.doGet(fmt.Sprintf("%s/%d/billable_rates/%d", api.baseUrl, userId, billableRateId))
 }
 
 func (api UsersApi) CreateBillableRate(userId uint, req CreateBillableRateRequest) (HarvestResponse, error) {
-	return api.client.DoPost(fmt.Sprintf("%s/%d", api.baseUrl, userId), req)
+	return api.client.doPost(fmt.Sprintf("%s/%d", api.baseUrl, userId), req)
 }
 
 func (api UsersApi) GetCostRates(userId uint, params ...HarvestCollectionParams) (HarvestResponse, error) {
-	return api.client.DoGet(
+	return api.client.doGet(
 		fmt.Sprintf("%s/%d/cost_rates", api.baseUrl, userId),
 		getOptionalCollectionParams(params),
 	)
 }
 
 func (api UsersApi) GetCostRate(userId, costRateId uint) (HarvestResponse, error) {
-	return api.client.DoGet(fmt.Sprintf("%s/%d/cost_rates/%d", api.baseUrl, userId, costRateId))
+	return api.client.doGet(fmt.Sprintf("%s/%d/cost_rates/%d", api.baseUrl, userId, costRateId))
 }
 
 func (api UsersApi) CreateCostRate(userId uint, req CreateCostRateRequest) (HarvestResponse, error) {
-	return api.client.DoPost(fmt.Sprintf("%s/%d", api.baseUrl, userId), req)
+	return api.client.doPost(fmt.Sprintf("%s/%d", api.baseUrl, userId), req)
 }
 
 func (api UsersApi) GetActiveProjectAssignments(userId uint, params ...HarvestCollectionParams) (HarvestResponse, error) {
-	return api.client.DoGet(
+	return api.client.doGet(
 		fmt.Sprintf("%s/%d/project_assignments", api.baseUrl, userId),
 		getOptionalCollectionParams(params),
 	)
 }
 
 func (api UsersApi) GetMyActiveProjectAssignments(params ...HarvestCollectionParams) (HarvestResponse, error) {
-	return api.client.DoGet(
+	return api.client.doGet(
 		fmt.Sprintf("%s/me/project_assignments", api.baseUrl),
 		getOptionalCollectionParams(params),
 	)

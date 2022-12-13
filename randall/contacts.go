@@ -38,21 +38,21 @@ func newContactsV2(client *internalClient) ContactsApi {
 }
 
 func (api ContactsApi) GetAll(params ...HarvestCollectionParams) (HarvestResponse, error) {
-	return api.client.DoGet(api.baseUrl, getOptionalCollectionParams(params))
+	return api.client.doGet(api.baseUrl, getOptionalCollectionParams(params))
 }
 
 func (api ContactsApi) Get(contactId uint) (HarvestResponse, error) {
-	return api.client.DoGet(fmt.Sprintf("%s/%d", api.baseUrl, contactId))
+	return api.client.doGet(fmt.Sprintf("%s/%d", api.baseUrl, contactId))
 }
 
 func (api ContactsApi) CreateContact(req CreateContactRequest) (HarvestResponse, error) {
-	return api.client.DoPost(api.baseUrl, req)
+	return api.client.doPost(api.baseUrl, req)
 }
 
 func (api ContactsApi) UpdateContact(contactId uint, req PatchContactRequest) (HarvestResponse, error) {
-	return api.client.DoPatch(fmt.Sprintf("%s/%d", api.baseUrl, contactId), req)
+	return api.client.doPatch(fmt.Sprintf("%s/%d", api.baseUrl, contactId), req)
 }
 
 func (api ContactsApi) DeleteClient(contactId uint) (HarvestResponse, error) {
-	return api.client.DoDelete(fmt.Sprintf("%s/%d", api.baseUrl, contactId))
+	return api.client.doDelete(fmt.Sprintf("%s/%d", api.baseUrl, contactId))
 }

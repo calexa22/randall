@@ -20,9 +20,9 @@ func newCompanyV2(client *internalClient) CompanyApi {
 
 // Retrieves the Company of currently authenticated user. Returns a company object and a 200 OK response code.
 func (api CompanyApi) MyCompany() (HarvestResponse, error) {
-	return api.client.DoGet(api.baseUrl)
+	return api.client.doGet(api.baseUrl)
 }
 
 func (api CompanyApi) Update(req UpdateCompanyRequest) (HarvestResponse, error) {
-	return api.client.DoPatch(api.baseUrl, req)
+	return api.client.doPatch(api.baseUrl, req)
 }

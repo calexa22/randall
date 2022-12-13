@@ -113,70 +113,70 @@ func newProjectsV2(client *internalClient) ProjectsApi {
 
 // Retrieves the a list of Projects.
 func (api ProjectsApi) GetAll(params ...HarvestCollectionParams) (HarvestResponse, error) {
-	return api.client.DoGet(api.baseUrl, getOptionalCollectionParams(params))
+	return api.client.doGet(api.baseUrl, getOptionalCollectionParams(params))
 }
 
 // Retrieves a Project with the given ProjectID.
 func (api ProjectsApi) Get(projectId uint) (HarvestResponse, error) {
-	return api.client.DoGet(fmt.Sprintf("%s/%d", api.baseUrl, projectId))
+	return api.client.doGet(fmt.Sprintf("%s/%d", api.baseUrl, projectId))
 }
 
 func (api ProjectsApi) Create(req CreateProjectRequest) (HarvestResponse, error) {
-	return api.client.DoPost(api.baseUrl, req)
+	return api.client.doPost(api.baseUrl, req)
 }
 
 func (api ProjectsApi) Update(projectId uint, req UpdateProjectRequest) (HarvestResponse, error) {
-	return api.client.DoPatch(fmt.Sprintf("%s/%d", api.baseUrl, projectId), req)
+	return api.client.doPatch(fmt.Sprintf("%s/%d", api.baseUrl, projectId), req)
 }
 
 func (api ProjectsApi) Delete(projectId uint) (HarvestResponse, error) {
-	return api.client.DoDelete(fmt.Sprintf("%s/%d", api.baseUrl, projectId))
+	return api.client.doDelete(fmt.Sprintf("%s/%d", api.baseUrl, projectId))
 }
 
 func (api ProjectsApi) GetAllUserAssigments(params ...HarvestCollectionParams) (HarvestResponse, error) {
-	return api.client.DoGet("v2/user_assignments", getOptionalCollectionParams(params))
+	return api.client.doGet("v2/user_assignments", getOptionalCollectionParams(params))
 }
 
 func (api ProjectsApi) GetAllUserAssigmentsForProject(projectId uint, params ...HarvestCollectionParams) (HarvestResponse, error) {
-	return api.client.DoGet(fmt.Sprintf("%s/%d/user_assignments", api.baseUrl, projectId), getOptionalCollectionParams(params))
+	return api.client.doGet(fmt.Sprintf("%s/%d/user_assignments", api.baseUrl, projectId), getOptionalCollectionParams(params))
 }
 
 func (api ProjectsApi) GetUserAssigment(projectId, userAssignmentId uint) (HarvestResponse, error) {
-	return api.client.DoGet(fmt.Sprintf("%s/%d/user_assignments/%d", api.baseUrl, projectId, userAssignmentId))
+	return api.client.doGet(fmt.Sprintf("%s/%d/user_assignments/%d", api.baseUrl, projectId, userAssignmentId))
 }
 
 func (api ProjectsApi) CreateUserAssignment(projectId uint, req CreateUserAssignmentRequest) (HarvestResponse, error) {
-	return api.client.DoPost(fmt.Sprintf("%s/%d/user_assignments", api.baseUrl, projectId), req)
+	return api.client.doPost(fmt.Sprintf("%s/%d/user_assignments", api.baseUrl, projectId), req)
 }
 
 func (api ProjectsApi) UpdateUserAssignment(projectId, userAssignmentId uint, req PatchUserAssignmentRequest) (HarvestResponse, error) {
-	return api.client.DoPatch(fmt.Sprintf("%s/%d/user_assignments/%d", api.baseUrl, projectId, userAssignmentId), req)
+	return api.client.doPatch(fmt.Sprintf("%s/%d/user_assignments/%d", api.baseUrl, projectId, userAssignmentId), req)
 }
 
 func (api ProjectsApi) DeleteUserAssignment(projectId, userAssignmentId uint) (HarvestResponse, error) {
-	return api.client.DoDelete(fmt.Sprintf("%s/%d/user_assignments/%d", api.baseUrl, projectId, userAssignmentId))
+	return api.client.doDelete(fmt.Sprintf("%s/%d/user_assignments/%d", api.baseUrl, projectId, userAssignmentId))
 }
 
 func (api ProjectsApi) GetAllTaskAssigments(params ...HarvestCollectionParams) (HarvestResponse, error) {
-	return api.client.DoGet("v2/task_assignments", getOptionalCollectionParams(params))
+	return api.client.doGet("v2/task_assignments", getOptionalCollectionParams(params))
 }
 
 func (api ProjectsApi) GetAllTaskAssigmentsForProject(projectId uint, params ...HarvestCollectionParams) (HarvestResponse, error) {
-	return api.client.DoGet(fmt.Sprintf("%s/%d/task_assignments", api.baseUrl, projectId), getOptionalCollectionParams(params))
+	return api.client.doGet(fmt.Sprintf("%s/%d/task_assignments", api.baseUrl, projectId), getOptionalCollectionParams(params))
 }
 
 func (api ProjectsApi) GetTaskAssigment(projectId, taskAssignmentId uint) (HarvestResponse, error) {
-	return api.client.DoGet(fmt.Sprintf("%s/%d/task_assignments/%d", api.baseUrl, projectId, taskAssignmentId))
+	return api.client.doGet(fmt.Sprintf("%s/%d/task_assignments/%d", api.baseUrl, projectId, taskAssignmentId))
 }
 
 func (api ProjectsApi) CreateTaskAssignment(projectId uint, req CreateTaskAssignmentRequest) (HarvestResponse, error) {
-	return api.client.DoPost(fmt.Sprintf("%s/%d/task_assignments", api.baseUrl, projectId), req)
+	return api.client.doPost(fmt.Sprintf("%s/%d/task_assignments", api.baseUrl, projectId), req)
 }
 
 func (api ProjectsApi) UpdateTaskAssignment(projectId, userAssignmentId uint, req PatchTaskAssignmentRequest) (HarvestResponse, error) {
-	return api.client.DoPatch(fmt.Sprintf("%s/%d/task_assignments/%d", api.baseUrl, projectId, userAssignmentId), req)
+	return api.client.doPatch(fmt.Sprintf("%s/%d/task_assignments/%d", api.baseUrl, projectId, userAssignmentId), req)
 }
 
 func (api ProjectsApi) DeleteTaskAssignment(projectId, taskAssignmentId uint) (HarvestResponse, error) {
-	return api.client.DoDelete(fmt.Sprintf("%s/%d/task_assignments/%d", api.baseUrl, projectId, taskAssignmentId))
+	return api.client.doDelete(fmt.Sprintf("%s/%d/task_assignments/%d", api.baseUrl, projectId, taskAssignmentId))
 }

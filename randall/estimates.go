@@ -77,88 +77,88 @@ func newEstimatesV2(client *internalClient) EstimatesApi {
 }
 
 func (api EstimatesApi) GetAll(params ...HarvestCollectionParams) (HarvestResponse, error) {
-	return api.client.DoGet(api.estimatesBaseUrl, getOptionalCollectionParams(params))
+	return api.client.doGet(api.estimatesBaseUrl, getOptionalCollectionParams(params))
 }
 
 func (api EstimatesApi) Get(estimateId uint) (HarvestResponse, error) {
-	return api.client.DoGet(fmt.Sprintf("%s/%d", api.estimatesBaseUrl, estimateId))
+	return api.client.doGet(fmt.Sprintf("%s/%d", api.estimatesBaseUrl, estimateId))
 }
 
 func (api EstimatesApi) Create(req CreateEstimateRequest) (HarvestResponse, error) {
-	return api.client.DoPost(api.estimatesBaseUrl, req)
+	return api.client.doPost(api.estimatesBaseUrl, req)
 }
 
 func (api EstimatesApi) Update(estimateId uint, req UpdateEstimateRequest) (HarvestResponse, error) {
-	return api.client.DoPatch(fmt.Sprintf("%s/%d", api.estimatesBaseUrl, estimateId), req)
+	return api.client.doPatch(fmt.Sprintf("%s/%d", api.estimatesBaseUrl, estimateId), req)
 }
 
 func (api EstimatesApi) Delete(estimateId uint) (HarvestResponse, error) {
-	return api.client.DoDelete(fmt.Sprintf("%s/%d", api.estimatesBaseUrl, estimateId))
+	return api.client.doDelete(fmt.Sprintf("%s/%d", api.estimatesBaseUrl, estimateId))
 }
 
 func (api EstimatesApi) GetAllEstimateMessages(estimateId uint, params ...HarvestCollectionParams) (HarvestResponse, error) {
-	return api.client.DoGet(
+	return api.client.doGet(
 		fmt.Sprintf("%s/%d/messages", api.estimatesBaseUrl, estimateId),
 		getOptionalCollectionParams(params),
 	)
 }
 
 func (api EstimatesApi) CreateEstimateMessage(estimateId uint, req CreateEstimateMessageRequest) (HarvestResponse, error) {
-	return api.client.DoPost(fmt.Sprintf("%s/%d/messages", api.estimatesBaseUrl, estimateId), req)
+	return api.client.doPost(fmt.Sprintf("%s/%d/messages", api.estimatesBaseUrl, estimateId), req)
 }
 
 func (api EstimatesApi) MarkDraftEstimateSent(estimateId uint) (HarvestResponse, error) {
-	return api.client.DoPost(
+	return api.client.doPost(
 		fmt.Sprintf("%s/%d/messages", api.estimatesBaseUrl, estimateId),
 		getUpdateEventTypeRequest("send"))
 }
 
 func (api EstimatesApi) MarkEstimateAccepted(estimateId uint) (HarvestResponse, error) {
-	return api.client.DoPost(
+	return api.client.doPost(
 		fmt.Sprintf("%s/%d/messages", api.estimatesBaseUrl, estimateId),
 		getUpdateEventTypeRequest("accept"),
 	)
 }
 
 func (api EstimatesApi) MarkEstimateDeclined(estimateId uint) (HarvestResponse, error) {
-	return api.client.DoPost(
+	return api.client.doPost(
 		fmt.Sprintf("%s/%d/messages", api.estimatesBaseUrl, estimateId),
 		getUpdateEventTypeRequest("decline"),
 	)
 }
 
 func (api EstimatesApi) ReopenClosedEstimate(estimateId uint) (HarvestResponse, error) {
-	return api.client.DoPost(
+	return api.client.doPost(
 		fmt.Sprintf("%s/%d/messages", api.estimatesBaseUrl, estimateId),
 		getUpdateEventTypeRequest("re-open"),
 	)
 }
 
 func (api EstimatesApi) DeleteEstimateMessage(estimateId uint) (HarvestResponse, error) {
-	return api.client.DoDelete(fmt.Sprintf("%s/%d/messages", api.estimatesBaseUrl, estimateId))
+	return api.client.doDelete(fmt.Sprintf("%s/%d/messages", api.estimatesBaseUrl, estimateId))
 }
 
 func (api EstimatesApi) GetAllEstimateItemCategories(params ...HarvestCollectionParams) (HarvestResponse, error) {
-	return api.client.DoGet(api.estimateItemCategoriesBaseUrl, getOptionalCollectionParams(params))
+	return api.client.doGet(api.estimateItemCategoriesBaseUrl, getOptionalCollectionParams(params))
 }
 
 func (api EstimatesApi) GetEstimateItemCategory(estimateItemCategoryId uint) (HarvestResponse, error) {
-	return api.client.DoGet(fmt.Sprintf("%s/%d", api.estimateItemCategoriesBaseUrl, estimateItemCategoryId))
+	return api.client.doGet(fmt.Sprintf("%s/%d", api.estimateItemCategoriesBaseUrl, estimateItemCategoryId))
 }
 
 func (api EstimatesApi) CreateEstimateItemCategory(categoryName string) (HarvestResponse, error) {
-	return api.client.DoPost(api.estimateItemCategoriesBaseUrl, upsertItemCategoryRequest{
+	return api.client.doPost(api.estimateItemCategoriesBaseUrl, upsertItemCategoryRequest{
 		Name: categoryName,
 	})
 }
 
 func (api EstimatesApi) UpdateEstimateItemCategory(estimateCategoryItemId uint, categoryName string) (HarvestResponse, error) {
-	return api.client.DoPatch(fmt.Sprintf("%s/%d", api.estimateItemCategoriesBaseUrl, estimateCategoryItemId),
+	return api.client.doPatch(fmt.Sprintf("%s/%d", api.estimateItemCategoriesBaseUrl, estimateCategoryItemId),
 		upsertItemCategoryRequest{
 			Name: categoryName,
 		})
 }
 
 func (api EstimatesApi) DeleteEstimateItemCategory(estimateCategoryItemId uint) (HarvestResponse, error) {
-	return api.client.DoDelete(fmt.Sprintf("%s/%d", api.estimateItemCategoriesBaseUrl, estimateCategoryItemId))
+	return api.client.doDelete(fmt.Sprintf("%s/%d", api.estimateItemCategoriesBaseUrl, estimateCategoryItemId))
 }

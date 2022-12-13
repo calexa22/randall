@@ -35,22 +35,22 @@ func newTasksV2(client *internalClient) TasksApi {
 
 // Retrieves the a list of Tasks.
 func (api TasksApi) GetAllTasks(params ...HarvestCollectionParams) (HarvestResponse, error) {
-	return api.client.DoGet(api.baseUrl, getOptionalCollectionParams(params))
+	return api.client.doGet(api.baseUrl, getOptionalCollectionParams(params))
 }
 
 // Retrieves a Task with the given TaskID.
 func (api TasksApi) GetTask(taskId uint) (HarvestResponse, error) {
-	return api.client.DoGet(fmt.Sprintf("%s/%d", api.baseUrl, taskId))
+	return api.client.doGet(fmt.Sprintf("%s/%d", api.baseUrl, taskId))
 }
 
 func (api TasksApi) CreateTask(req CreateTaskRequest) (HarvestResponse, error) {
-	return api.client.DoPost(api.baseUrl, req)
+	return api.client.doPost(api.baseUrl, req)
 }
 
 func (api TasksApi) UpdateTask(taskId uint, req UpdateTaskRequest) (HarvestResponse, error) {
-	return api.client.DoPatch(fmt.Sprintf("%s/%d", api.baseUrl, taskId), req)
+	return api.client.doPatch(fmt.Sprintf("%s/%d", api.baseUrl, taskId), req)
 }
 
 func (api TasksApi) DeleteTask(taskId uint) (HarvestResponse, error) {
-	return api.client.DoDelete(fmt.Sprintf("%s/%d", api.baseUrl, taskId))
+	return api.client.doDelete(fmt.Sprintf("%s/%d", api.baseUrl, taskId))
 }

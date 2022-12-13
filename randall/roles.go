@@ -33,25 +33,25 @@ func newRolesV2(client *internalClient) RolesApi {
 
 // Retrieves a list of all Roles, with an optional query string.
 func (api RolesApi) GetAllRoles(params ...HarvestCollectionParams) (HarvestResponse, error) {
-	return api.client.DoGet(api.baseUrl, getOptionalCollectionParams(params))
+	return api.client.doGet(api.baseUrl, getOptionalCollectionParams(params))
 }
 
 // Retrieves a Role with the given RoleID.
 func (api RolesApi) GetRole(roleId uint) (HarvestResponse, error) {
-	return api.client.DoGet(fmt.Sprintf("%s/%d", api.baseUrl, roleId))
+	return api.client.doGet(fmt.Sprintf("%s/%d", api.baseUrl, roleId))
 }
 
 // Creates a new Role.
 func (api RolesApi) CreateRole(req CreateRoleRequest) (HarvestResponse, error) {
-	return api.client.DoPost(api.baseUrl, req)
+	return api.client.doPost(api.baseUrl, req)
 }
 
 // Updates a Role with the given RoleID.
 func (api RolesApi) UpdateRole(roleId uint, req UpdateRoleRequest) (HarvestResponse, error) {
-	return api.client.DoPatch(fmt.Sprintf("%s/%d", api.baseUrl, roleId), req)
+	return api.client.doPatch(fmt.Sprintf("%s/%d", api.baseUrl, roleId), req)
 }
 
 // Deletes a Role with the given RoleID.
 func (api RolesApi) DeleteRole(roleId uint) (HarvestResponse, error) {
-	return api.client.DoDelete(fmt.Sprintf("%s/%d", api.baseUrl, roleId))
+	return api.client.doDelete(fmt.Sprintf("%s/%d", api.baseUrl, roleId))
 }

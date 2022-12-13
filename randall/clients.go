@@ -30,21 +30,21 @@ func newClientsV2(client *internalClient) ClientsApi {
 }
 
 func (api ClientsApi) GetAll(params ...HarvestCollectionParams) (HarvestResponse, error) {
-	return api.client.DoGet(api.baseUrl, getOptionalCollectionParams(params))
+	return api.client.doGet(api.baseUrl, getOptionalCollectionParams(params))
 }
 
 func (api ClientsApi) Get(clientId uint) (HarvestResponse, error) {
-	return api.client.DoGet(fmt.Sprintf("%s/%d", api.baseUrl, clientId))
+	return api.client.doGet(fmt.Sprintf("%s/%d", api.baseUrl, clientId))
 }
 
 func (api ClientsApi) Create(req CreateClientRequest) (HarvestResponse, error) {
-	return api.client.DoPost(api.baseUrl, req)
+	return api.client.doPost(api.baseUrl, req)
 }
 
 func (api ClientsApi) Update(clientId uint, req PatchClientRequest) (HarvestResponse, error) {
-	return api.client.DoPatch(fmt.Sprintf("%s/%d", api.baseUrl, clientId), req)
+	return api.client.doPatch(fmt.Sprintf("%s/%d", api.baseUrl, clientId), req)
 }
 
 func (api ClientsApi) Delete(clientId uint) (HarvestResponse, error) {
-	return api.client.DoDelete(fmt.Sprintf("%s/%d", api.baseUrl, clientId))
+	return api.client.doDelete(fmt.Sprintf("%s/%d", api.baseUrl, clientId))
 }

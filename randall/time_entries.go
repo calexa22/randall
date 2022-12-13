@@ -97,39 +97,39 @@ func (api TimeEntriesApi) GetAll(params ...GetTimeEntriesParams) (HarvestRespons
 	if len(params) > 0 {
 		param = &params[0]
 	}
-	return api.client.DoGet(api.baseUrl, param)
+	return api.client.doGet(api.baseUrl, param)
 }
 
 func (api TimeEntriesApi) GetTimeEntry(timeEntryId uint) (HarvestResponse, error) {
-	return api.client.DoGet(fmt.Sprintf("%s/%d", api.baseUrl, timeEntryId))
+	return api.client.doGet(fmt.Sprintf("%s/%d", api.baseUrl, timeEntryId))
 }
 
 func (api TimeEntriesApi) CreateViaDuration(req CreateTimeEntryViaDurationRequest) (HarvestResponse, error) {
-	return api.client.DoPost(api.baseUrl, req)
+	return api.client.doPost(api.baseUrl, req)
 }
 
 func (api TimeEntriesApi) CreateViaStartEnd(req CreateTimeEntryViaStartEndRequest) (HarvestResponse, error) {
-	return api.client.DoPost(api.baseUrl, req)
+	return api.client.doPost(api.baseUrl, req)
 }
 
 func (api TimeEntriesApi) UpdateTimeEntry(timeEntryId uint, req UpdateTimeEntryRequest) (HarvestResponse, error) {
-	return api.client.DoPatch(fmt.Sprintf("%s/%d", api.baseUrl, timeEntryId), req)
+	return api.client.doPatch(fmt.Sprintf("%s/%d", api.baseUrl, timeEntryId), req)
 }
 
 func (api TimeEntriesApi) DeleteTimeEntry(timeEntryId uint) (HarvestResponse, error) {
-	return api.client.DoDelete(fmt.Sprintf("%s/%d", api.baseUrl, timeEntryId))
+	return api.client.doDelete(fmt.Sprintf("%s/%d", api.baseUrl, timeEntryId))
 }
 
 func (api TimeEntriesApi) DeleteExternalReference(timeEntryId int) (HarvestResponse, error) {
-	return api.client.DoDelete(fmt.Sprintf("%s/%d/external_reference", api.baseUrl, timeEntryId))
+	return api.client.doDelete(fmt.Sprintf("%s/%d/external_reference", api.baseUrl, timeEntryId))
 }
 
 func (api TimeEntriesApi) RestartTimeEntry(timeEntryId uint) (HarvestResponse, error) {
-	return api.client.DoPatch(fmt.Sprintf("%s/%d/restart", api.baseUrl, timeEntryId))
+	return api.client.doPatch(fmt.Sprintf("%s/%d/restart", api.baseUrl, timeEntryId))
 }
 
 func (api TimeEntriesApi) StopTimeEntry(timeEntryId uint) (HarvestResponse, error) {
-	return api.client.DoPatch(fmt.Sprintf("%s/%d/stop", api.baseUrl, timeEntryId))
+	return api.client.doPatch(fmt.Sprintf("%s/%d/stop", api.baseUrl, timeEntryId))
 }
 
 // func TimeEntriesQuery(p GetTimeEntriesParams) map[string]string {
