@@ -2,13 +2,15 @@ package randall
 
 import (
 	"time"
+
+	"github.com/shopspring/decimal"
 )
 
 func OptionalUInt(v uint) *uint {
 	return &v
 }
 
-func OptionalFloat32(v float32) *float32 {
+func OptionalDecimal(v decimal.Decimal) *decimal.Decimal {
 	return &v
 }
 

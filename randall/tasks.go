@@ -2,6 +2,8 @@ package randall
 
 import (
 	"fmt"
+
+	"github.com/shopspring/decimal"
 )
 
 // Encapsulates the Harvest API methods under /projects
@@ -11,19 +13,19 @@ type TasksApi struct {
 }
 
 type CreateTaskRequest struct {
-	Name              string   `json:"name"`
-	DefaultHourlyRate *float32 `json:"default_hourly_rate,omitempty"`
-	IsDefault         *bool    `json:"is_default,omitempty"`
-	IsActive          *bool    `json:"is_active,omitempty"`
-	BillableByDefault *bool    `json:"billable_by_default,omitempty"`
+	Name              string           `json:"name"`
+	DefaultHourlyRate *decimal.Decimal `json:"default_hourly_rate,omitempty"`
+	IsDefault         *bool            `json:"is_default,omitempty"`
+	IsActive          *bool            `json:"is_active,omitempty"`
+	BillableByDefault *bool            `json:"billable_by_default,omitempty"`
 }
 
 type UpdateTaskRequest struct {
-	Name              *string  `json:"name,omitempty"`
-	DefaultHourlyRate *float32 `json:"default_hourly_rate,omitempty"`
-	IsDefault         *bool    `json:"is_default,omitempty"`
-	IsActive          *bool    `json:"is_active,omitempty"`
-	BillableByDefault *bool    `json:"billable_by_default,omitempty"`
+	Name              *string          `json:"name,omitempty"`
+	DefaultHourlyRate *decimal.Decimal `json:"default_hourly_rate,omitempty"`
+	IsDefault         *bool            `json:"is_default,omitempty"`
+	IsActive          *bool            `json:"is_active,omitempty"`
+	BillableByDefault *bool            `json:"billable_by_default,omitempty"`
 }
 
 func newTasksV2(client *internalClient) TasksApi {

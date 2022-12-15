@@ -3,6 +3,8 @@ package randall
 import (
 	"fmt"
 	"time"
+
+	"github.com/shopspring/decimal"
 )
 
 const (
@@ -18,33 +20,33 @@ type UsersApi struct {
 }
 
 type CreateUserRequest struct {
-	FirstName                   string   `json:"first_name"`
-	LastName                    string   `json:"last_name"`
-	Email                       string   `json:"email"`
-	Timezone                    *string  `json:"timezone,omitempty"`
-	HasAccesToAllFutureProjects *bool    `json:"has_access_to_all_future_projects,omitempty"`
-	IsContractor                *bool    `json:"is_contractor,omitempty"`
-	IsActive                    *bool    `json:"is_active,omitempty"`
-	WeeklyCapacity              *uint    `json:"weekly_capacity,omitempty"`
-	DefaultHourlyRate           *float32 `json:"default_hourly_rate,omitempty"`
-	CostRate                    *float32 `json:"cost_rate,omitempty"`
-	Roles                       []string `json:"roles,omitempty"`
-	AccessRoles                 []string `json:"access_roles,omitempty"`
+	FirstName                   string           `json:"first_name"`
+	LastName                    string           `json:"last_name"`
+	Email                       string           `json:"email"`
+	Timezone                    *string          `json:"timezone,omitempty"`
+	HasAccesToAllFutureProjects *bool            `json:"has_access_to_all_future_projects,omitempty"`
+	IsContractor                *bool            `json:"is_contractor,omitempty"`
+	IsActive                    *bool            `json:"is_active,omitempty"`
+	WeeklyCapacity              *uint            `json:"weekly_capacity,omitempty"`
+	DefaultHourlyRate           *decimal.Decimal `json:"default_hourly_rate,omitempty"`
+	CostRate                    *decimal.Decimal `json:"cost_rate,omitempty"`
+	Roles                       []string         `json:"roles,omitempty"`
+	AccessRoles                 []string         `json:"access_roles,omitempty"`
 }
 
 type UpdateUserRequest struct {
-	FirstName                   *string  `json:"first_name,omitempty"`
-	LastName                    *string  `json:"last_name,omitempty"`
-	Email                       *string  `json:"email,omitempty"`
-	Timezone                    *string  `json:"timezone,omitempty"`
-	HasAccesToAllFutureProjects *bool    `json:"has_access_to_all_future_projects,omitempty"`
-	IsContractor                *bool    `json:"is_contractor,omitempty"`
-	IsActive                    *bool    `json:"is_active,omitempty"`
-	WeeklyCapacity              *uint    `json:"weekly_capacity,omitempty"`
-	DefaultHourlyRate           *float32 `json:"default_hourly_rate,omitempty"`
-	CostRate                    *float32 `json:"cost_rate,omitempty"`
-	Roles                       []string `json:"roles,omitempty"`
-	AccessRoles                 []string `json:"access_roles,omitempty"`
+	FirstName                   *string          `json:"first_name,omitempty"`
+	LastName                    *string          `json:"last_name,omitempty"`
+	Email                       *string          `json:"email,omitempty"`
+	Timezone                    *string          `json:"timezone,omitempty"`
+	HasAccesToAllFutureProjects *bool            `json:"has_access_to_all_future_projects,omitempty"`
+	IsContractor                *bool            `json:"is_contractor,omitempty"`
+	IsActive                    *bool            `json:"is_active,omitempty"`
+	WeeklyCapacity              *uint            `json:"weekly_capacity,omitempty"`
+	DefaultHourlyRate           *decimal.Decimal `json:"default_hourly_rate,omitempty"`
+	CostRate                    *decimal.Decimal `json:"cost_rate,omitempty"`
+	Roles                       []string         `json:"roles,omitempty"`
+	AccessRoles                 []string         `json:"access_roles,omitempty"`
 }
 
 type UpdateAssignedTeammatesRequest struct {
@@ -52,13 +54,13 @@ type UpdateAssignedTeammatesRequest struct {
 }
 
 type CreateBillableRateRequest struct {
-	Amount    float32   `json:"amount"`
-	StartDate time.Time `json:"date,omitempty" layout:"2006-01-02"`
+	Amount    decimal.Decimal `json:"amount"`
+	StartDate time.Time       `json:"date,omitempty" layout:"2006-01-02"`
 }
 
 type CreateCostRateRequest struct {
-	Amount    float32   `json:"amount"`
-	StartDate time.Time `json:"date,omitempty" layout:"2006-01-02"`
+	Amount    decimal.Decimal `json:"amount"`
+	StartDate time.Time       `json:"date,omitempty" layout:"2006-01-02"`
 }
 
 func newUsersV2(client *internalClient) UsersApi {

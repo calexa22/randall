@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/google/go-querystring/query"
+	"github.com/shopspring/decimal"
 )
 
 // Encapsulates the Harvest API methods under /time_entries
@@ -48,7 +49,7 @@ type CreateTimeEntryViaDurationRequest struct {
 	TaskId      uint               `json:"task_id"`
 	SpentDate   time.Time          `json:"spent_date" layout:"2006-01-02"`
 	UserId      *uint              `json:"user_id,omitempty"`
-	Hours       *float32           `json:"hours,omitempty"`
+	Hours       *decimal.Decimal   `json:"hours,omitempty"`
 	Notes       *string            `json:"notes,omitempty"`
 	ExternalRef *ExternalReference `json:"external_reference,omitempty"`
 }
@@ -70,7 +71,7 @@ type UpdateTimeEntryRequest struct {
 	SpentDate   time.Time          `json:"spent_date,omitempty" layout:"2006-01-02"`
 	StartedTime *string            `json:"started_time,omitempty"`
 	EndTime     *string            `json:"end_time,omitempty"`
-	Hours       *float32           `json:"hours,omitempty"`
+	Hours       *decimal.Decimal   `json:"hours,omitempty"`
 	Notes       *string            `json:"notes,omitempty"`
 	ExternalRef *ExternalReference `json:"external_reference,omitempty"`
 }

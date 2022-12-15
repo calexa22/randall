@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 	"strconv"
 	"time"
+
+	"github.com/shopspring/decimal"
 )
 
 // Encapsulates the Harvest API methods under /expenses and /expense_categories
@@ -17,41 +19,41 @@ type ExpensesApi struct {
 }
 
 type CreateExpenseRequest struct {
-	ProjectId         uint      `json:"project_id"`
-	ExpenseCategoryId uint      `json:"expense_category_id"`
-	SpentDate         time.Time `json:"spent_date" layout:"2006-01-02"`
-	UserId            *uint     `json:"user_id,omitempty"`
-	Units             *uint     `json:"units,omitempty"`
-	TotalCost         *float32  `json:"total_cost,omitempty"`
-	Notes             *string   `json:"notes,omitempty"`
-	Billable          *bool     `json:"billable,omitempty"`
-	Receipt           *string   `json:"receipt,omitempty" layout:"2006-01-02"`
+	ProjectId         uint             `json:"project_id"`
+	ExpenseCategoryId uint             `json:"expense_category_id"`
+	SpentDate         time.Time        `json:"spent_date" layout:"2006-01-02"`
+	UserId            *uint            `json:"user_id,omitempty"`
+	Units             *uint            `json:"units,omitempty"`
+	TotalCost         *decimal.Decimal `json:"total_cost,omitempty"`
+	Notes             *string          `json:"notes,omitempty"`
+	Billable          *bool            `json:"billable,omitempty"`
+	Receipt           *string          `json:"receipt,omitempty" layout:"2006-01-02"`
 }
 
 type UpdateExpenseRequest struct {
-	ProjectId         *uint      `json:"project_id,omitempty"`
-	ExpenseCategoryId *uint      `json:"expense_category_id,omitempty"`
-	SpentDate         *time.Time `json:"spent_date,omitempty" layout:"2006-01-02"`
-	Units             *uint      `json:"units,omitempty"`
-	TotalCost         *float32   `json:"total_cost,omitempty"`
-	Notes             *string    `json:"notes,omitempty"`
-	Billable          *bool      `json:"billable,omitempty"`
-	Receipt           *string    `json:"receipt,omitempty"`
-	DeleteReceipt     *bool      `json:"delete_receipt,omitempty"`
+	ProjectId         *uint            `json:"project_id,omitempty"`
+	ExpenseCategoryId *uint            `json:"expense_category_id,omitempty"`
+	SpentDate         *time.Time       `json:"spent_date,omitempty" layout:"2006-01-02"`
+	Units             *uint            `json:"units,omitempty"`
+	TotalCost         *decimal.Decimal `json:"total_cost,omitempty"`
+	Notes             *string          `json:"notes,omitempty"`
+	Billable          *bool            `json:"billable,omitempty"`
+	Receipt           *string          `json:"receipt,omitempty"`
+	DeleteReceipt     *bool            `json:"delete_receipt,omitempty"`
 }
 
 type CreateExpenseCategoryRequest struct {
-	Name      string   `json:"name"`
-	UnitName  *string  `json:"unit_name,omitempty"`
-	UnitPrice *float32 `json:"unit_price,omitempty"`
-	IsActive  *bool    `json:"is_active,omitempty"`
+	Name      string           `json:"name"`
+	UnitName  *string          `json:"unit_name,omitempty"`
+	UnitPrice *decimal.Decimal `json:"unit_price,omitempty"`
+	IsActive  *bool            `json:"is_active,omitempty"`
 }
 
 type UpdateExpenseCategoryRequest struct {
-	Name      *string  `json:"name,omitempty"`
-	UnitName  *string  `json:"unit_name,omitempty"`
-	UnitPrice *float32 `json:"unit_price,omitempty"`
-	IsActive  *bool    `json:"is_active,omitempty"`
+	Name      *string          `json:"name,omitempty"`
+	UnitName  *string          `json:"unit_name,omitempty"`
+	UnitPrice *decimal.Decimal `json:"unit_price,omitempty"`
+	IsActive  *bool            `json:"is_active,omitempty"`
 }
 
 func newExpensesV2(client *internalClient) ExpensesApi {
@@ -133,9 +135,7 @@ func (r CreateExpenseRequest) multipartData() (multipartData, error) {
 	}
 
 	if r.TotalCost != nil {
-		// TODO find the proper way to serialize decimals for multipart requests
-		// might look into decimal pkg
-		//data["total_cost"] = strconv.FormatFloat(uint64(*r.Units), 10)
+		data["total_cost"] = (*r.TotalCost).String()
 	}
 
 	if r.Notes != nil {
@@ -181,9 +181,7 @@ func (r UpdateExpenseRequest) multipartData() (multipartData, error) {
 	}
 
 	if r.TotalCost != nil {
-		// TODO find the proper way to serialize decimals for multipart requests
-		// might look into decimal pkg
-		//data["total_cost"] = strconv.FormatFloat(uint64(*r.Units), 10)
+		data["total_cost"] = (*r.TotalCost).String()
 	}
 
 	if r.Notes != nil {
@@ -226,7 +224,7 @@ func isValidReceipt(receiptPath string) error {
 	}
 
 	if !isValidExt {
-		return fmt.Errorf("%s: invalid file type, valid files types are %+v", receiptPath, validExts)
+		return fmt.Errorf("%s: invalid file type, valid files types are %v", receiptPath, validExts)
 	}
 
 	return nil

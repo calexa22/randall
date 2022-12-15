@@ -3,25 +3,8 @@ package randall
 import (
 	"fmt"
 	"time"
-)
 
-const (
-	InvoicePaymentTermUponReceipt = "upon receipt"
-	InvoicePaymentTermNet15       = "net 15"
-	InvoicePaymentTermNet30       = "net 30"
-	InvoicePaymentTermNet45       = "net 45"
-	InvoicePaymentTermNet60       = "net 60"
-	InvoicePaymentTermCustom      = "custom"
-
-	TimeImportSummaryTypeProject  = "project"
-	TimeImportSummaryTypeTask     = "task"
-	TimeImportSummaryTypePeople   = "people"
-	TimeImportSummaryTypeDetailed = "detailed"
-
-	ExpenseImportSummaryTypeProject  = "project"
-	ExpenseImportSummaryTypeCategory = "category"
-	ExpenseImportSummaryTypePeople   = "people"
-	ExpenseImportSummaryTypeDetailed = "detailed"
+	"github.com/shopspring/decimal"
 )
 
 // Encapsulates the Harvest API methods under /projects
@@ -37,9 +20,9 @@ type CreateFreeFormInvoiceRequest struct {
 	EstimateId    *uint                           `json:"estimate_id,omitempty"`
 	Number        *string                         `json:"number,omitempty"`
 	PurchaseOrder *string                         `json:"purchase_order,omitempty"`
-	Tax           *float32                        `json:"tax,omitempty"`
-	Tax2          *float32                        `json:"tax2,omitempty"`
-	Discount      *float32                        `json:"discount,omitempty"`
+	Tax           *decimal.Decimal                `json:"tax,omitempty"`
+	Tax2          *decimal.Decimal                `json:"tax2,omitempty"`
+	Discount      *decimal.Decimal                `json:"discount,omitempty"`
 	Subject       *string                         `json:"subject,omitempty"`
 	Notes         *string                         `json:"notes,omitempty"`
 	Currency      *string                         `json:"currency,omitempty"`
@@ -55,9 +38,9 @@ type CreateInvoiceFromTrackedTimeAndExpenseRequest struct {
 	EstimateId      *uint                         `json:"estimate_id,omitempty"`
 	Number          *string                       `json:"number,omitempty"`
 	PurchaseOrder   *string                       `json:"purchase_order,omitempty"`
-	Tax             *float32                      `json:"tax,omitempty"`
-	Tax2            *float32                      `json:"tax2,omitempty"`
-	Discount        *float32                      `json:"discount,omitempty"`
+	Tax             *decimal.Decimal              `json:"tax,omitempty"`
+	Tax2            *decimal.Decimal              `json:"tax2,omitempty"`
+	Discount        *decimal.Decimal              `json:"discount,omitempty"`
 	Subject         *string                       `json:"subject,omitempty"`
 	Notes           *string                       `json:"notes,omitempty"`
 	Currency        *string                       `json:"currency,omitempty"`
@@ -68,13 +51,13 @@ type CreateInvoiceFromTrackedTimeAndExpenseRequest struct {
 }
 
 type CreateInvoiceLineItemRequest struct {
-	Kind        string   `json:"kind"`
-	ProjectId   *uint    `json:"project_id,omitempty"`
-	Description *string  `json:"description,omitempty"`
-	Quantity    *uint    `json:"quantity,omitempty"`
-	UnitPrice   *float32 `json:"unit_price,omitempty"`
-	Taxed       *bool    `json:"taxed,omitempty"`
-	Taxed2      *bool    `json:"taxed2,omitempty"`
+	Kind        string           `json:"kind"`
+	ProjectId   *uint            `json:"project_id,omitempty"`
+	Description *string          `json:"description,omitempty"`
+	Quantity    *uint            `json:"quantity,omitempty"`
+	UnitPrice   *decimal.Decimal `json:"unit_price,omitempty"`
+	Taxed       *bool            `json:"taxed,omitempty"`
+	Taxed2      *bool            `json:"taxed2,omitempty"`
 }
 
 type CreateLineItemsImportRequest struct {
@@ -102,9 +85,9 @@ type UpdateInvoiceRequest struct {
 	EstimateId    *uint                          `json:"estimate_id,omitempty"`
 	Number        *string                        `json:"number,omitempty"`
 	PurchaseOrder *string                        `json:"purchase_order,omitempty"`
-	Tax           *float32                       `json:"tax,omitempty"`
-	Tax2          *float32                       `json:"tax2,omitempty"`
-	Discount      *float32                       `json:"discount,omitempty"`
+	Tax           *decimal.Decimal               `json:"tax,omitempty"`
+	Tax2          *decimal.Decimal               `json:"tax2,omitempty"`
+	Discount      *decimal.Decimal               `json:"discount,omitempty"`
 	Subject       *string                        `json:"subject,omitempty"`
 	Notes         *string                        `json:"notes,omitempty"`
 	Currency      *string                        `json:"currency,omitempty"`
@@ -115,15 +98,15 @@ type UpdateInvoiceRequest struct {
 }
 
 type UpdateInvoiceLineItemRequest struct {
-	Id          *uint    `json:"id,omitempty"`
-	ProjectId   *uint    `json:"project_id,omitempty"`
-	Kind        *string  `json:"kind,omitempty"`
-	Description *string  `json:"description,omitempty"`
-	Quantity    *uint    `json:"quantity,omitempty"`
-	UnitPrice   *float32 `json:"unit_price,omitempty"`
-	Taxed       *bool    `json:"taxed,omitempty"`
-	Taxed2      *bool    `json:"taxed2,omitempty"`
-	Destroy     *bool    `json:"_destroy,omitempty"`
+	Id          *uint            `json:"id,omitempty"`
+	ProjectId   *uint            `json:"project_id,omitempty"`
+	Kind        *string          `json:"kind,omitempty"`
+	Description *string          `json:"description,omitempty"`
+	Quantity    *uint            `json:"quantity,omitempty"`
+	UnitPrice   *decimal.Decimal `json:"unit_price,omitempty"`
+	Taxed       *bool            `json:"taxed,omitempty"`
+	Taxed2      *bool            `json:"taxed2,omitempty"`
+	Destroy     *bool            `json:"_destroy,omitempty"`
 }
 
 type CreateInvoiceMessageRequest struct {
@@ -138,10 +121,10 @@ type CreateInvoiceMessageRequest struct {
 }
 
 type CreateInvoicePaymentRequest struct {
-	Amount   float32    `json:"amount"`
-	PaidAt   *time.Time `json:"paid_at,omitempty"`
-	PaidDate *time.Time `json:"paid_date,omitempty" layout:"2006-01-02"`
-	Notes    *string    `json:"notes,omitempty"`
+	Amount   decimal.Decimal `json:"amount"`
+	PaidAt   *time.Time      `json:"paid_at,omitempty"`
+	PaidDate *time.Time      `json:"paid_date,omitempty" layout:"2006-01-02"`
+	Notes    *string         `json:"notes,omitempty"`
 }
 
 func newInvoicesV2(client *internalClient) InvoicesApi {

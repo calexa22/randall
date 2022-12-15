@@ -3,6 +3,8 @@ package randall
 import (
 	"fmt"
 	"time"
+
+	"github.com/shopspring/decimal"
 )
 
 // Encapsulates the Harvest API methods under /expenses
@@ -16,9 +18,9 @@ type CreateEstimateRequest struct {
 	ClientId      uint                            `json:"client_id"`
 	Number        *string                         `json:"number,omitempty"`
 	PurchaseOrder *string                         `json:"purchase_order,omitempty"`
-	Tax           *float32                        `json:"tax,omitempty"`
-	Tax2          *float32                        `json:"tax2,omitempty"`
-	Discount      *float32                        `json:"discount,omitempty"`
+	Tax           *decimal.Decimal                `json:"tax,omitempty"`
+	Tax2          *decimal.Decimal                `json:"tax2,omitempty"`
+	Discount      *decimal.Decimal                `json:"discount,omitempty"`
 	Subject       *string                         `json:"subject,omitempty"`
 	Notes         *string                         `json:"notes,omitempty"`
 	Currency      *string                         `json:"currency,omitempty"`
@@ -27,21 +29,21 @@ type CreateEstimateRequest struct {
 }
 
 type CreateEstimateLineItemRequest struct {
-	Kind        string   `json:"kind"`
-	Description *string  `json:"description,omitempty"`
-	Quantity    *uint    `json:"quantity,omitempty"`
-	UnitPrice   *float32 `json:"unit_price,omitempty"`
-	Taxed       *bool    `json:"taxed,omitempty"`
-	Taxed2      *bool    `json:"taxed2,omitempty"`
+	Kind        string           `json:"kind"`
+	Description *string          `json:"description,omitempty"`
+	Quantity    *uint            `json:"quantity,omitempty"`
+	UnitPrice   *decimal.Decimal `json:"unit_price,omitempty"`
+	Taxed       *bool            `json:"taxed,omitempty"`
+	Taxed2      *bool            `json:"taxed2,omitempty"`
 }
 
 type UpdateEstimateRequest struct {
 	ClientId      *uint                           `json:"client_id,omitempty"`
 	Number        *string                         `json:"number,omitempty"`
 	PurchaseOrder *string                         `json:"purchase_order,omitempty"`
-	Tax           *float32                        `json:"tax,omitempty"`
-	Tax2          *float32                        `json:"tax2,omitempty"`
-	Discount      *float32                        `json:"discount,omitempty"`
+	Tax           *decimal.Decimal                `json:"tax,omitempty"`
+	Tax2          *decimal.Decimal                `json:"tax2,omitempty"`
+	Discount      *decimal.Decimal                `json:"discount,omitempty"`
 	Subject       *string                         `json:"subject,omitempty"`
 	Notes         *string                         `json:"notes,omitempty"`
 	Currency      *string                         `json:"currency,omitempty"`
@@ -50,14 +52,14 @@ type UpdateEstimateRequest struct {
 }
 
 type UpdateEstimateLineItemRequest struct {
-	Id          *uint    `json:"id,omitempty"`
-	Kind        *string  `json:"kind,omitempty"`
-	Description *string  `json:"description,omitempty"`
-	Quantity    *uint    `json:"quantity,omitempty"`
-	UnitPrice   *float32 `json:"unit_price,omitempty"`
-	Taxed       *bool    `json:"taxed,omitempty"`
-	Taxed2      *bool    `json:"taxed2,omitempty"`
-	Destroy     *bool    `json:"_destroy,omitempty"`
+	Id          *uint            `json:"id,omitempty"`
+	Kind        *string          `json:"kind,omitempty"`
+	Description *string          `json:"description,omitempty"`
+	Quantity    *uint            `json:"quantity,omitempty"`
+	UnitPrice   *decimal.Decimal `json:"unit_price,omitempty"`
+	Taxed       *bool            `json:"taxed,omitempty"`
+	Taxed2      *bool            `json:"taxed2,omitempty"`
+	Destroy     *bool            `json:"_destroy,omitempty"`
 }
 
 type CreateEstimateMessageRequest struct {
