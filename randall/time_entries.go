@@ -26,6 +26,8 @@ type GetTimeEntriesParams struct {
 	UpdateSince         *time.Time `url:"updated_since,omitempty"`
 	FromDate            *time.Time `url:"from,omitempty"`
 	StartDate           *time.Time `url:"start,omitempty"`
+	Page                *int       `url:"page,omitempty"`
+	PerPage             *int       `url:"per_page,omitempty"`
 }
 
 func (p GetTimeEntriesParams) AddQuery(v url.Values) (url.Values, error) {

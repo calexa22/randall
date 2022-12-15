@@ -10,6 +10,10 @@ func OptionalUInt(v uint) *uint {
 	return &v
 }
 
+func OptionalInt(v int) *int {
+	return &v
+}
+
 func OptionalDecimal(v decimal.Decimal) *decimal.Decimal {
 	return &v
 }
