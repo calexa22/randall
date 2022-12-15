@@ -69,8 +69,8 @@ func NewClient(accountId, accessToken, userAgentApp, userAgentEmail string) *Har
 	}
 }
 
-func (client *internalClient) doGet(url string, params ...interface{}) (HarvestResponse, error) {
-	r, err := http.NewRequest("GET", fmt.Sprintf("%s/%s", client.baseUrl, url), nil)
+func (client *internalClient) doGet(resourceUri string, params ...interface{}) (HarvestResponse, error) {
+	r, err := http.NewRequest("GET", fmt.Sprintf("%s/%s", client.baseUrl, resourceUri), nil)
 
 	if err != nil {
 		return HarvestResponse{}, nil
